@@ -2,8 +2,8 @@
 <nav style="background:#1b5e20; padding:10px 20px; display:flex; justify-content:space-between; align-items:center; color:#fff;">
   <div style="font-size:1.2rem;font-weight:bold;">Koperasi Mahasiswa</div>
   <div style="display:flex; gap:16px;">
-    <a href="/dashboard.html" style="color:#fff; text-decoration:none;">Dashboard</a>
-    <a href="/kelola-transaksi.html" style="color:#fff; text-decoration:none;">Kelola Transaksi</a>
+    <a href="/admin" style="color:#fff; text-decoration:none;">Dashboard</a>
+    <a href="/transaksi" style="color:#fff; text-decoration:none;">Kelola Transaksi</a>
     <a href="/daftar-feedback.html" style="color:#fff; text-decoration:none;">Daftar Feedback</a>
   </div>
 </nav>
