@@ -29,8 +29,8 @@ Route::get('/transaksi', function () {
     return view('admin.transaksi');
 });
 
-Route::get('/daftar-feedback', function () {
-    return view('admin.daftar-feedback');
+Route::get('/daftar', function () {
+    return view('admin.daftar');
 });
 
 Route::get('/simpanan', function () {
