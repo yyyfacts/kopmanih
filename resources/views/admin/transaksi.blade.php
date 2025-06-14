@@ -97,7 +97,7 @@
     }
     .transaction-card-header {
       display: flex;
-      justify-content: space-between;
+      justify-content: space-between; /* Mengubah kembali ke space-between */
       align-items: center;
       border-bottom: 1px solid #eee;
       padding-bottom: 12px;
@@ -135,13 +135,11 @@
     .btn-card-reject {
       @apply bg-red-600 hover:bg-red-700 text-white;
     }
-    /* Mengubah warna tombol edit ke oranye (kuning) */
     .btn-card-edit {
-      @apply bg-orange-500 hover:bg-orange-600 text-white;
+      @apply bg-blue-500 hover:bg-blue-600 text-white;
     }
-    /* Mengubah warna tombol delete ke oranye (kuning) */
     .btn-card-delete {
-      @apply bg-orange-500 hover:bg-orange-600 text-white;
+      @apply bg-orange-500 hover:bg-orange-600 text-white; /* Warna kuning/oranye */
     }
     .status-badge {
       @apply py-1 px-3 rounded-full text-sm font-semibold;
@@ -187,18 +185,17 @@
 
       <!-- Simpanan Section -->
       <section id="simpananSection" class="flex flex-col gap-6">
-        <div class="flex justify-between items-center mb-4"> <!-- Menggunakan justify-between dan items-center -->
-          <h2 class="text-3xl font-bold text-emerald-700">Daftar Transaksi Simpanan</h2> <!-- Judul untuk section -->
+        <div class="flex justify-between items-center mb-4">
+          <h2 class="text-3xl font-bold text-emerald-700">Daftar Transaksi Simpanan</h2>
           <div class="flex items-center">
             <label for="sortSimpanan" class="mr-2 text-gray-700 font-medium">Urutkan berdasarkan :</label>
             <select id="sortSimpanan" class="border border-green-300 bg-green-50 text-green-800 rounded-md p-2 appearance-none pr-8">
               <option value="terbaru">Terbaru</option>
               <option value="terlama">Terlama</option>
             </select>
-            <span class="ml-[-24px] pointer-events-none text-gray-700">&#9660;</span> <!-- Custom dropdown arrow -->
+            <span class="ml-[-24px] pointer-events-none text-gray-700">&#9660;</span>
           </div>
         </div>
-        <!-- Konten simpanan akan dimuat di sini -->
         <div id="simpananCardsContainer" class="flex flex-col gap-6">
           <p class="text-center text-gray-500">Memuat data simpanan...</p>
         </div>
@@ -206,18 +203,17 @@
 
       <!-- Pinjaman Section (Hidden by default) -->
       <section id="pinjamanSection" class="flex flex-col gap-6 hidden">
-        <div class="flex justify-between items-center mb-4"> <!-- Menggunakan justify-between dan items-center -->
-          <h2 class="text-3xl font-bold text-emerald-700">Daftar Transaksi Pinjaman</h2> <!-- Judul untuk section -->
+        <div class="flex justify-between items-center mb-4">
+          <h2 class="text-3xl font-bold text-emerald-700">Daftar Transaksi Pinjaman</h2>
           <div class="flex items-center">
             <label for="sortPinjaman" class="mr-2 text-gray-700 font-medium">Urutkan berdasarkan :</label>
             <select id="sortPinjaman" class="border border-green-300 bg-green-50 text-green-800 rounded-md p-2 appearance-none pr-8">
               <option value="terbaru">Terbaru</option>
               <option value="terlama">Terlama</option>
             </select>
-            <span class="ml-[-24px] pointer-events-none text-gray-700">&#9660;</span> <!-- Custom dropdown arrow -->
+            <span class="ml-[-24px] pointer-events-none text-gray-700">&#9660;</span>
           </div>
         </div>
-        <!-- Konten pinjaman akan dimuat di sini -->
         <div id="pinjamanCardsContainer" class="flex flex-col gap-6">
           <p class="text-center text-gray-500">Memuat data pinjaman...</p>
         </div>
@@ -370,27 +366,30 @@
             // Use getDateFromDoc for consistent date display
             const displayDate = getDateFromDoc(data);
             const formattedDate = displayDate.toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' });
+            // Get the date for the top-right corner, formatted as "DD Mon YYYY"
+            const formattedHeaderDate = displayDate.toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' });
+
             html += `
               <div class="transaction-card">
                 <div class="transaction-card-header">
                   <div class="flex items-center gap-3">
-                    <i class="fas fa-user-circle text-emerald-500 text-3xl"></i>
-                    <span class="text-xl font-bold text-emerald-800">${formatRupiah(data.jumlah)}</span>
+                    <i class="fas fa-user-circle text-emerald-700 text-3xl"></i> <!-- Icon dan warna hijau -->
+                    <span class="text-xl font-bold text-emerald-700">${formatRupiah(data.jumlah)}</span> <!-- Warna hijau -->
                   </div>
-                  <span class="status-badge ${getStatusBadgeClass(data.status)}">${data.status || '-'}</span>
+                  <span class="text-gray-600 text-sm font-medium">${formattedHeaderDate}</span> <!-- Tanggal di kanan atas, warna abu-abu -->
                 </div>
-                <div class="flex flex-col gap-2"> <!-- Menggunakan flex-col untuk detail -->
+                <div class="flex flex-col gap-2">
                     <div class="transaction-card-detail">
                         <i class="fas fa-envelope text-gray-500"></i>
                         <span>Pengaju: ${data.userEmail || '-'}</span>
                     </div>
                     <div class="transaction-card-detail">
-                        <i class="fas fa-calendar-alt text-gray-500"></i>
-                        <span>Tanggal: ${formattedDate}</span>
-                    </div>
-                    <div class="transaction-card-detail">
                         <i class="fas fa-info-circle text-gray-500"></i>
                         <span>Keterangan: ${data.keterangan || '-'}</span>
+                    </div>
+                    <div class="transaction-card-detail">
+                        <i class="fas fa-tasks text-gray-500"></i>
+                        <span>Status: <span class="status-badge ${getStatusBadgeClass(data.status)}">${data.status || '-'}</span></span>
                     </div>
                 </div>
                 <div class="transaction-card-actions">
@@ -408,7 +407,7 @@
             `;
           });
         }
-        simpananCardsContainer.innerHTML = html; // Update only the cards container
+        simpananCardsContainer.innerHTML = html;
       } catch (error) {
         console.error("Error loading simpanan data:", error);
         simpananCardsContainer.innerHTML = '<p class="text-center text-red-500">Gagal memuat data simpanan.</p>';
@@ -442,27 +441,30 @@
             // Use getDateFromDoc for consistent date display
             const displayDate = getDateFromDoc(data);
             const formattedDate = displayDate.toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' });
+            // Get the date for the top-right corner, formatted as "DD Mon YYYY"
+            const formattedHeaderDate = displayDate.toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' });
+
             html += `
               <div class="transaction-card">
                 <div class="transaction-card-header">
                   <div class="flex items-center gap-3">
-                    <i class="fas fa-user-circle text-emerald-500 text-3xl"></i>
-                    <span class="text-xl font-bold text-emerald-800">${formatRupiah(data.jumlah)}</span>
+                    <i class="fas fa-user-circle text-emerald-700 text-3xl"></i> <!-- Icon dan warna hijau -->
+                    <span class="text-xl font-bold text-emerald-700">${formatRupiah(data.jumlah)}</span> <!-- Warna hijau -->
                   </div>
-                  <span class="status-badge ${getStatusBadgeClass(data.status)}">${data.status || '-'}</span>
+                  <span class="text-gray-600 text-sm font-medium">${formattedHeaderDate}</span> <!-- Tanggal di kanan atas, warna abu-abu -->
                 </div>
-                <div class="flex flex-col gap-2"> <!-- Menggunakan flex-col untuk detail -->
+                <div class="flex flex-col gap-2">
                     <div class="transaction-card-detail">
                         <i class="fas fa-envelope text-gray-500"></i>
                         <span>Pengaju: ${data.userEmail || '-'}</span>
                     </div>
                     <div class="transaction-card-detail">
-                        <i class="fas fa-calendar-alt text-gray-500"></i>
-                        <span>Tanggal: ${formattedDate}</span>
-                    </div>
-                    <div class="transaction-card-detail">
                         <i class="fas fa-bullseye text-gray-500"></i>
                         <span>Tujuan: ${data.tujuan || '-'}</span>
+                    </div>
+                    <div class="transaction-card-detail">
+                        <i class="fas fa-tasks text-gray-500"></i>
+                        <span>Status: <span class="status-badge ${getStatusBadgeClass(data.status)}">${data.status || '-'}</span></span>
                     </div>
                 </div>
                 <div class="transaction-card-actions">
@@ -472,7 +474,6 @@
                   <button class="btn-card btn-card-reject" onclick="ubahStatusPinjaman('${data.id}', 'Ditolak')">
                     <i class="fas fa-times"></i> Tolak
                   </button>
-                  <!-- Tombol Edit dihapus dari sini sesuai permintaan -->
                   <button class="btn-card btn-card-delete" onclick="deletePinjaman('${data.id}')">
                     <i class="fas fa-trash"></i> Hapus
                   </button>
@@ -481,7 +482,7 @@
             `;
           });
         }
-        pinjamanCardsContainer.innerHTML = html; // Update only the cards container
+        pinjamanCardsContainer.innerHTML = html;
       } catch (error) {
         console.error("Error loading pinjaman data:", error);
         pinjamanCardsContainer.innerHTML = '<p class="text-center text-red-500">Gagal memuat data pinjaman.</p>';
