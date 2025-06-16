@@ -11,10 +11,10 @@
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
     body {
-      font-family: 'Inter', sans-serif; /* Menggunakan font Inter */
+      font-family: 'Inter', sans-serif;
       margin: 0;
-      background: #f8fafc; /* Latar belakang yang lebih terang dan modern, konsisten dashboard */
-      color: #333;
+      background: #047857 !important; /* Hijau koperasi */
+      color: #fff;
     }
     /* Mengatur tinggi minimum untuk memastikan footer tidak naik saat konten pendek */
     #root {
@@ -82,6 +82,119 @@
       display: flex;
       justify-content: center;
       gap: 1rem; /* Adjusted gap */
+    }
+
+    /* Sidebar styles */
+    .sidebar {
+      width: 250px;
+      min-width: 220px;
+      background: linear-gradient(to bottom, #047857, #065f46);
+      color: #fff;
+      height: 100vh;
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 40;
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.3s ease;
+    }
+    .sidebar-collapsed {
+      transform: translateX(-100%);
+    }
+    .sidebar-header {
+      padding: 2rem 1.5rem 1rem 1.5rem;
+      font-size: 1.5rem;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      border-bottom: 1px solid #05966933;
+    }
+    .sidebar-menu {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      padding: 1.5rem 1rem 1rem 1.5rem;
+    }
+    .sidebar-menu a {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.75rem 1rem;
+      border-radius: 0.5rem;
+      color: #d1fae5;
+      font-weight: 500;
+      transition: background 0.2s, color 0.2s;
+      text-decoration: none;
+    }
+    .sidebar-menu a.active, .sidebar-menu a:hover {
+      background: #059669;
+      color: #fff;
+    }
+    .sidebar-user {
+      margin: 1.5rem 1rem 1rem 1.5rem;
+      border-top: 1px solid #05966933;
+      padding-top: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      justify-content: space-between;
+    }
+    .sidebar-user-btn {
+      background: none;
+      border: none;
+      color: #d1fae5;
+      font-size: 1.1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 0.75rem;
+      border-radius: 0.5rem;
+      transition: background 0.2s, color 0.2s;
+    }
+    .sidebar-user-btn:hover {
+      background: #059669;
+      color: #fff;
+    }
+    .sidebar-toggle {
+      display: none;
+      position: fixed;
+      top: 1.25rem;
+      left: 1.25rem;
+      z-index: 50;
+      background: #047857;
+      color: #fff;
+      border: none;
+      border-radius: 0.5rem;
+      padding: 0.5rem 0.75rem;
+      font-size: 1.5rem;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+    @media (max-width: 1024px) {
+      .sidebar {
+        transform: translateX(-100%);
+      }
+      .sidebar.open {
+        transform: translateX(0);
+      }
+      .sidebar-toggle {
+        display: block;
+      }
+      .main-content {
+        margin-left: 0 !important;
+      }
+    }
+    @media (min-width: 1025px) {
+      .sidebar {
+        transform: translateX(0);
+      }
+      .main-content {
+        margin-left: 250px;
+      }
     }
 
     /* Styling untuk setiap item transaksi individual (kartu) */
@@ -212,29 +325,25 @@
   </style>
 </head>
 <body>
-  <div id="root">
-    <nav class="bg-emerald-800 p-4 shadow-lg flex justify-between items-center text-white z-50 relative">
-      <div class="text-2xl font-bold tracking-wide flex items-center gap-3">
-        <i class="fas fa-university text-emerald-300"></i>
-        Koperasi Mahasiswa
-      </div>
-      <div class="flex items-center gap-6">
-        <a href="/admin" class="text-emerald-200 hover:text-white font-medium transition duration-300 ease-in-out">Dashboard</a>
-        <a href="/transaksi" class="text-white font-medium transition duration-300 ease-in-out">Kelola Transaksi</a>
-        <a href="/daftar" class="text-emerald-200 hover:text-white font-medium transition duration-300 ease-in-out">Daftar Feedback</a>
-        <div class="relative group">
-          <button id="userMenuButton" class="flex items-center gap-2 text-emerald-200 hover:text-white font-medium transition duration-200 focus:outline-none">
-            <i class="fas fa-user-circle text-2xl"></i>
-            Admin
-            <i class="fas fa-chevron-down text-xs ml-1"></i>
-          </button>
-          <div id="userMenuDropdown" class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 hidden group-hover:block transition duration-200 ease-out transform scale-95 group-hover:scale-100 opacity-0 group-hover:opacity-100 origin-top-right">
-            <a href="#" id="logoutButton" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"><i class="fas fa-sign-out-alt mr-2"></i> Logout</a>
-          </div>
-        </div>
-      </div>
+  <button id="sidebarToggle" class="sidebar-toggle lg:hidden" aria-label="Buka Sidebar">
+    <i class="fas fa-bars"></i>
+  </button>
+  <div class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <i class="fas fa-university text-emerald-300"></i>
+      Koperasi Mahasiswa
+    </div>
+    <nav class="sidebar-menu">
+      <a href="/admin"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+      <a href="/transaksi" class="active"><i class="fas fa-exchange-alt"></i> Kelola Transaksi</a>
+      <a href="/daftar"><i class="fas fa-comments"></i> Daftar Feedback</a>
     </nav>
-
+    <div class="sidebar-user">
+      <span class="flex items-center gap-2"><i class="fas fa-user-circle text-2xl"></i> Admin</span>
+      <button id="sidebarLogoutBtn" class="sidebar-user-btn"><i class="fas fa-sign-out-alt"></i> Logout</button>
+    </div>
+  </div>
+  <div id="root" class="main-content">
     <header class="bg-gradient-to-r from-emerald-600 to-emerald-800 text-white p-8 text-center shadow-md">
       <h1 class="text-4xl font-extrabold mb-2">Kelola Transaksi</h1>
       <p class="text-lg opacity-90">Manajemen Simpanan dan Pinjaman Anggota Koperasi</p>
@@ -709,27 +818,28 @@
       }
     });
 
-    // Toggle user menu dropdown on button click for better UX
-    userMenuButton.addEventListener('click', (e) => {
-        e.stopPropagation(); // Prevent click from bubbling to document and closing immediately
-        userMenuDropdown.classList.toggle('hidden');
-        if (userMenuDropdown.classList.contains('hidden')) {
-            userMenuDropdown.classList.remove('opacity-100', 'scale-100');
-            userMenuDropdown.classList.add('opacity-0', 'scale-95');
-        } else {
-            userMenuDropdown.classList.remove('opacity-0', 'scale-95');
-            userMenuDropdown.classList.add('opacity-100', 'scale-100');
-        }
+    // Sidebar toggle logic
+    const sidebar = document.getElementById('sidebar');
+    const sidebarToggle = document.getElementById('sidebarToggle');
+    sidebarToggle.addEventListener('click', () => {
+      sidebar.classList.toggle('open');
     });
-
-    // Close dropdown if clicked outside
+    // Close sidebar on outside click (mobile)
     document.addEventListener('click', (e) => {
-        if (!userMenuButton.contains(e.target) && !userMenuDropdown.contains(e.target)) {
-            userMenuDropdown.classList.add('hidden');
-            userMenuDropdown.classList.add('opacity-0');
-            userMenuDropdown.classList.add('scale-95');
+      if (window.innerWidth <= 1024 && sidebar.classList.contains('open')) {
+        if (!sidebar.contains(e.target) && !sidebarToggle.contains(e.target)) {
+          sidebar.classList.remove('open');
         }
+      }
     });
+    // Sidebar logout button triggers modal
+    const sidebarLogoutBtn = document.getElementById('sidebarLogoutBtn');
+    sidebarLogoutBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      logoutModal.classList.remove('hidden');
+    });
+    // Hide user menu dropdown (karena sudah di sidebar)
+    if (userMenuDropdown) userMenuDropdown.style.display = 'none';
     // --- End Logout Modal Logic ---
 
   </script>
