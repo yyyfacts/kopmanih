@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Kreait\Firebase\Factory;
+use App\Models\User;
 
 class DashboardController extends Controller
 {
@@ -28,6 +29,11 @@ class DashboardController extends Controller
             $uid = $verifiedIdToken->claims()->get('sub');
             $firebaseUser = $this->auth->getUser($uid);
 
+            $user = User::where('firebase_uid', $uid)->first();
+            if (!$user || $user->role !== 'user') {
+                return redirect('/login')->withErrors(['msg' => 'Unauthorized']);
+            }
+
             return view('dashboard.index', [
                 'email' => $firebaseUser->email,
                 'uid' => $uid,
@@ -40,7 +46,6 @@ class DashboardController extends Controller
 
     public function admin(Request $request)
     {
-        // Sama seperti index, atau bisa dibuat method terpisah
         $idToken = $request->bearerToken() ?? $request->cookie('firebase_token');
 
         if (!$idToken) {
@@ -52,7 +57,10 @@ class DashboardController extends Controller
             $uid = $verifiedIdToken->claims()->get('sub');
             $firebaseUser = $this->auth->getUser($uid);
 
-            // Cek role di Firestore atau database lain jika perlu di sini
+            $user = User::where('firebase_uid', $uid)->first();
+            if (!$user || $user->role !== 'admin') {
+                return redirect('/login')->withErrors(['msg' => 'Unauthorized']);
+            }
 
             return view('admin.dashboard', [
                 'email' => $firebaseUser->email,
