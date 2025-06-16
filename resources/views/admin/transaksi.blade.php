@@ -4,16 +4,16 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Kelola Transaksi – Koperasi Mahasiswa</title>
-  <!-- Tailwind CSS CDN untuk styling modern dan responsif -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Font Awesome untuk ikon -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"></link>
   <style>
     /* Styling dasar */
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
     body {
       font-family: 'Inter', sans-serif; /* Menggunakan font Inter */
       margin: 0;
-      background: #f0f4f8; /* Latar belakang yang lebih terang dan modern */
+      background: #f8fafc; /* Latar belakang yang lebih terang dan modern, konsisten dashboard */
       color: #333;
     }
     /* Mengatur tinggi minimum untuk memastikan footer tidak naik saat konten pendek */
@@ -23,23 +23,23 @@
       flex-direction: column;
     }
 
-    /* Kustomisasi scrollbar untuk tampilan yang lebih bersih */
+    /* Kustomisasi scrollbar untuk tampilan yang lebih bersih, konsisten dashboard */
     ::-webkit-scrollbar {
       width: 8px;
     }
     ::-webkit-scrollbar-track {
-      background: #f1f1f1;
+      background: #e2e8f0;
       border-radius: 10px;
     }
     ::-webkit-scrollbar-thumb {
-      background: #888;
+      background: #94a3b8; /* Muted scrollbar color */
       border-radius: 10px;
     }
     ::-webkit-scrollbar-thumb:hover {
-      background: #555;
+      background: #64748b;
     }
 
-    /* Modal Styling */
+    /* Modal Styling (konsisten dengan halaman dashboard & feedback) */
     .modal-overlay {
       position: fixed;
       top: 0;
@@ -61,9 +61,9 @@
     }
     .modal-content {
       background: white;
-      padding: 30px; /* Padding lebih besar */
-      border-radius: 12px; /* Lebih bulat */
-      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2); /* Shadow yang lebih dalam */
+      padding: 2rem; /* Adjusted padding to match dashboard modal */
+      border-radius: 0.75rem; /* Adjusted border-radius */
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1); /* Adjusted shadow */
       text-align: center;
       max-width: 400px;
       width: 90%;
@@ -74,96 +74,164 @@
       transform: translateY(0);
     }
     .modal-content p {
-      margin-bottom: 25px; /* Spasi lebih banyak */
-      font-size: 1.1rem;
-      color: #4a5568; /* Warna teks yang lebih lembut */
+      margin-bottom: 1.5rem; /* Adjusted margin-bottom */
+      font-size: 1rem; /* Adjusted font size */
+      color: #4a5568;
     }
     .modal-buttons {
       display: flex;
       justify-content: center;
-      gap: 15px; /* Spasi antar tombol */
+      gap: 1rem; /* Adjusted gap */
     }
 
-    /* Styling tambahan untuk kartu */
-    .transaction-card {
-      background: white;
-      border-radius: 12px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-      padding: 24px;
-      margin-bottom: 20px;
+    /* Styling untuk setiap item transaksi individual (kartu) */
+    .manage-transaction-card { /* New class name for clarity on this page */
+      background: #ffffff;
+      padding: 1.5rem; /* Slightly more padding for a richer feel */
+      border-radius: 0.75rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+      border: 1px solid #e2e8f0;
       display: flex;
       flex-direction: column;
-      gap: 16px;
+      gap: 1.25rem; /* Consistent spacing */
+      transition: all 0.2s ease-in-out;
     }
-    .transaction-card-header {
+    .manage-transaction-card:hover {
+      background: #f0fdf4; /* Light emerald hover */
+      border-color: #a7f3d0;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+    }
+    .manage-transaction-card .transaction-card-header {
       display: flex;
-      justify-content: space-between; /* Mengubah kembali ke space-between */
+      justify-content: space-between;
       align-items: center;
-      border-bottom: 1px solid #eee;
-      padding-bottom: 12px;
-      margin-bottom: 12px;
+      padding-bottom: 1rem; /* Consistent padding */
+      margin-bottom: 1rem;
+      border-bottom: 1px solid #e2e8f0; /* Softer border */
     }
-    .transaction-card-detail {
+    .manage-transaction-card .transaction-card-header .amount-display {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+    .manage-transaction-card .transaction-card-detail {
       display: flex;
-      align-items: center;
-      gap: 10px;
-      /* Memastikan detail berada pada satu baris */
-      flex-wrap: nowrap; /* Mencegah wrap pada item detail */
-      white-space: nowrap; /* Mencegah teks terpotong */
-      overflow: hidden; /* Sembunyikan overflow */
-      text-overflow: ellipsis; /* Tampilkan elipsis jika terpotong */
+      align-items: flex-start; /* Align to top for multi-line content */
+      gap: 0.75rem; /* Gap between icon and text */
+      font-size: 0.95rem; /* Slightly smaller for details */
+      color: #475569; /* Muted text color */
     }
-    .transaction-card-detail span {
-        overflow: hidden;
-        text-overflow: ellipsis;
+    .manage-transaction-card .transaction-card-detail i {
+      color: #64748b; /* Muted icon color */
+      font-size: 1.1rem; /* Slightly larger icon for detail lines */
+      flex-shrink: 0; /* Prevent icon from shrinking */
     }
-    .transaction-card-actions {
+    .manage-transaction-card .transaction-card-detail span {
+      flex-grow: 1;
+      word-break: break-word; /* Ensure text wraps */
+      line-height: 1.4;
+    }
+    .manage-transaction-card .transaction-card-actions {
       display: flex;
-      justify-content: flex-end; /* Arahkan tombol ke kanan */
-      flex-wrap: wrap; /* Izinkan tombol wrap di layar kecil */
-      gap: 10px;
-      margin-top: 16px;
-      border-top: 1px solid #eee;
-      padding-top: 16px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 0.75rem; /* Consistent gap for buttons */
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px solid #e2e8f0;
     }
+    /* Redefine btn-card styles to match new aesthetic */
     .btn-card {
-      @apply py-2 px-5 rounded-lg font-semibold transition duration-200 shadow-md;
+      @apply py-2 px-4 rounded-md font-semibold transition duration-200 shadow-sm; /* Smaller padding, rounded-md */
+    }
+    .btn-card i {
+        margin-right: 0.35rem; /* Small margin for icons */
     }
     .btn-card-approve {
-      @apply bg-green-600 hover:bg-green-700 text-white;
+      @apply bg-emerald-600 hover:bg-emerald-700 text-white; /* Emerald green */
     }
     .btn-card-reject {
       @apply bg-red-600 hover:bg-red-700 text-white;
     }
-    .btn-card-edit {
+    .btn-card-edit { /* Not used in current rendering, but good to have */
       @apply bg-blue-500 hover:bg-blue-600 text-white;
     }
     .btn-card-delete {
-      @apply bg-orange-500 hover:bg-orange-600 text-white; /* Warna kuning/oranye */
+      @apply bg-rose-600 hover:bg-rose-700 text-white; /* More professional red for delete */
     }
+    /* Status badge styles are already consistent */
     .status-badge {
-      @apply py-1 px-3 rounded-full text-sm font-semibold;
+      @apply py-1 px-3 rounded-full text-xs font-semibold; /* Reduced font size for badges */
     }
-    .status-pending {
+    .status-Menunggu { /* Tailwind equivalent for the old classes */
       @apply bg-yellow-100 text-yellow-800;
     }
-    .status-approved {
-      @apply bg-green-100 text-green-800;
+    .status-Disetujui, .status-Aktif { /* Added Active status for consistency */
+      @apply bg-emerald-100 text-emerald-800;
     }
-    .status-rejected {
+    .status-Ditolak {
       @apply bg-red-100 text-red-800;
     }
+
+    /* Styling untuk dropdown (konsisten dengan halaman dashboard & feedback) */
+    .bulan-select { /* Reusing class name for consistency */
+      padding: 8px 24px 8px 12px; /* Adjust padding for better look, reduced vertical padding */
+      border: 1px solid #cbd5e1; /* Lighter, subtle border */
+      border-radius: 8px; /* Slightly more rounded corners */
+      background-color: #ffffff; /* White background */
+      color: #334155; /* Darker text */
+      font-size: 0.875em; /* Smaller font size (equivalent to Tailwind's text-sm) */
+      font-weight: 500;
+      cursor: pointer;
+      outline: none;
+      transition: border-color 0.3s, box-shadow 0.3s;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.05); /* Softer shadow */
+      -webkit-appearance: none; /* Remove default dropdown arrow */
+      -moz-appearance: none;
+      appearance: none;
+      padding-right: 36px; /* Ruang untuk panah kustom */
+    }
+    .bulan-select:hover {
+      border-color: #94a3b8; /* Muted hover border */
+    }
+    .bulan-select:focus {
+      border-color: #059669; /* Emerald focus */
+      box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.2);
+    }
+    .custom-dropdown-arrow {
+      position: absolute;
+      right: 10px; /* Adjusted right position */
+      top: 50%;
+      transform: translateY(-50%);
+      pointer-events: none;
+      color: #64748b; /* Muted arrow color */
+      font-size: 0.7em; /* Slightly smaller arrow */
+    }
+
   </style>
 </head>
 <body>
   <div id="root">
-    <!-- Navbar (menggunakan Tailwind untuk modernisasi) -->
-    <nav class="bg-emerald-700 p-4 shadow-lg flex justify-between items-center text-white">
-      <div class="text-2xl font-bold tracking-wide">Koperasi Mahasiswa</div>
-      <div class="flex gap-6">
-        <a href="/admin" class="text-white hover:text-emerald-200 transition duration-300 ease-in-out font-medium">Dashboard</a>
-        <a href="/transaksi" class="text-white hover:text-emerald-200 transition duration-300 ease-in-out font-medium">Kelola Transaksi</a>
-        <a href="/daftar" class="text-white hover:text-emerald-200 transition duration-300 ease-in-out font-medium">Daftar Feedback</a>
+    <nav class="bg-emerald-800 p-4 shadow-lg flex justify-between items-center text-white z-50 relative">
+      <div class="text-2xl font-bold tracking-wide flex items-center gap-3">
+        <i class="fas fa-university text-emerald-300"></i>
+        Koperasi Mahasiswa
+      </div>
+      <div class="flex items-center gap-6">
+        <a href="/admin" class="text-emerald-200 hover:text-white font-medium transition duration-300 ease-in-out">Dashboard</a>
+        <a href="/transaksi" class="text-white font-medium transition duration-300 ease-in-out">Kelola Transaksi</a>
+        <a href="/daftar" class="text-emerald-200 hover:text-white font-medium transition duration-300 ease-in-out">Daftar Feedback</a>
+        <div class="relative group">
+          <button id="userMenuButton" class="flex items-center gap-2 text-emerald-200 hover:text-white font-medium transition duration-200 focus:outline-none">
+            <i class="fas fa-user-circle text-2xl"></i>
+            Admin
+            <i class="fas fa-chevron-down text-xs ml-1"></i>
+          </button>
+          <div id="userMenuDropdown" class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 hidden group-hover:block transition duration-200 ease-out transform scale-95 group-hover:scale-100 opacity-0 group-hover:opacity-100 origin-top-right">
+            <a href="#" id="logoutButton" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"><i class="fas fa-sign-out-alt mr-2"></i> Logout</a>
+          </div>
+        </div>
       </div>
     </nav>
 
@@ -173,60 +241,68 @@
     </header>
 
     <main class="container mx-auto p-6 flex-grow">
-      <!-- Tab Selector -->
-      <div class="flex justify-center mb-8 bg-white p-2 rounded-lg shadow-sm">
-        <button id="simpananTabBtn" class="px-8 py-3 rounded-lg text-lg font-semibold transition-all duration-300 ease-in-out focus:outline-none bg-emerald-600 text-white shadow-md">
+      <div class="flex justify-center mb-8 bg-white p-2 rounded-xl shadow-lg border border-gray-100">
+        <button id="simpananTabBtn" class="flex-1 px-8 py-3 rounded-lg text-lg font-semibold transition-all duration-300 ease-in-out focus:outline-none bg-emerald-600 text-white shadow-md">
           Daftar Transaksi Simpanan
         </button>
-        <button id="pinjamanTabBtn" class="px-8 py-3 rounded-lg text-lg font-semibold ml-4 transition-all duration-300 ease-in-out focus:outline-none text-gray-700 hover:bg-emerald-100">
+        <button id="pinjamanTabBtn" class="flex-1 px-8 py-3 rounded-lg text-lg font-semibold ml-4 transition-all duration-300 ease-in-out focus:outline-none text-gray-700 hover:bg-emerald-100">
           Daftar Transaksi Pinjaman
         </button>
       </div>
 
-      <!-- Simpanan Section -->
-      <section id="simpananSection" class="flex flex-col gap-6">
-        <div class="flex justify-between items-center mb-4">
-          <h2 class="text-3xl font-bold text-emerald-700">Daftar Transaksi Simpanan</h2>
-          <div class="flex items-center">
-            <label for="sortSimpanan" class="mr-2 text-gray-700 font-medium">Urutkan berdasarkan :</label>
-            <select id="sortSimpanan" class="border border-green-300 bg-green-50 text-green-800 rounded-md p-2 appearance-none pr-8">
+      <section id="simpananSection" class="flex flex-col gap-6 bg-white rounded-xl shadow-lg border border-gray-100 p-6">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4">
+          <h2 class="text-2xl sm:text-3xl font-bold text-gray-800 mb-4 sm:mb-0">Daftar Transaksi Simpanan</h2>
+          <div class="flex items-center relative">
+            <label for="sortSimpanan" class="mr-2 text-gray-700 font-medium whitespace-nowrap">Urutkan berdasarkan :</label>
+            <select id="sortSimpanan" class="bulan-select">
               <option value="terbaru">Terbaru</option>
               <option value="terlama">Terlama</option>
             </select>
-            <span class="ml-[-24px] pointer-events-none text-gray-700">&#9660;</span>
+            <span class="custom-dropdown-arrow">&#9660;</span>
           </div>
         </div>
         <div id="simpananCardsContainer" class="flex flex-col gap-6">
-          <p class="text-center text-gray-500">Memuat data simpanan...</p>
+          <p class="text-center text-gray-500 py-8">Memuat data simpanan...</p>
         </div>
       </section>
 
-      <!-- Pinjaman Section (Hidden by default) -->
-      <section id="pinjamanSection" class="flex flex-col gap-6 hidden">
-        <div class="flex justify-between items-center mb-4">
-          <h2 class="text-3xl font-bold text-emerald-700">Daftar Transaksi Pinjaman</h2>
-          <div class="flex items-center">
-            <label for="sortPinjaman" class="mr-2 text-gray-700 font-medium">Urutkan berdasarkan :</label>
-            <select id="sortPinjaman" class="border border-green-300 bg-green-50 text-green-800 rounded-md p-2 appearance-none pr-8">
+      <section id="pinjamanSection" class="flex flex-col gap-6 hidden bg-white rounded-xl shadow-lg border border-gray-100 p-6">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4">
+          <h2 class="text-2xl sm:text-3xl font-bold text-gray-800 mb-4 sm:mb-0">Daftar Transaksi Pinjaman</h2>
+          <div class="flex items-center relative">
+            <label for="sortPinjaman" class="mr-2 text-gray-700 font-medium whitespace-nowrap">Urutkan berdasarkan :</label>
+            <select id="sortPinjaman" class="bulan-select">
               <option value="terbaru">Terbaru</option>
               <option value="terlama">Terlama</option>
             </select>
-            <span class="ml-[-24px] pointer-events-none text-gray-700">&#9660;</span>
+            <span class="custom-dropdown-arrow">&#9660;</span>
           </div>
         </div>
         <div id="pinjamanCardsContainer" class="flex flex-col gap-6">
-          <p class="text-center text-gray-500">Memuat data pinjaman...</p>
+          <p class="text-center text-gray-500 py-8">Memuat data pinjaman...</p>
         </div>
       </section>
     </main>
 
-    <!-- Custom Confirmation Modal -->
     <div id="confirmationModal" class="modal-overlay">
       <div class="modal-content">
-        <p id="modalMessage"></p>
+        <h3 class="text-xl font-semibold mb-4 text-gray-800">Konfirmasi</h3>
+        <p id="modalMessage">Apakah Anda yakin?</p>
         <div class="modal-buttons">
-          <button id="modalConfirmBtn" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-6 rounded-lg transition duration-200 shadow-md">Ya</button>
-          <button id="modalCancelBtn" class="bg-gray-400 hover:bg-gray-500 text-white font-bold py-2 px-6 rounded-lg transition duration-200 shadow-md">Batal</button>
+          <button id="modalConfirmBtn" class="px-6 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition duration-200 font-medium">Ya</button>
+          <button id="modalCancelBtn" class="px-6 py-2 bg-gray-400 text-white rounded-lg hover:bg-gray-500 transition duration-200 font-medium">Batal</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="logoutModal" class="modal-overlay hidden">
+      <div class="modal-content">
+        <h3 class="text-xl font-semibold mb-4 text-gray-800">Konfirmasi Logout</h3>
+        <p class="text-gray-600 mb-6">Apakah Anda yakin ingin keluar dari akun admin?</p>
+        <div class="modal-buttons">
+          <button id="cancelLogout" class="px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition duration-200 font-medium">Batal</button>
+          <button id="confirmLogout" class="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition duration-200 font-medium">Logout</button>
         </div>
       </div>
     </div>
@@ -234,6 +310,7 @@
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
     import { getFirestore, collection, getDocs, deleteDoc, updateDoc, doc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
     // Konfigurasi Firebase Anda
@@ -248,6 +325,7 @@
 
     // Inisialisasi Firebase
     const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app); // Initialize auth
     const db = getFirestore(app);
 
     // Ambil referensi ke elemen HTML
@@ -255,7 +333,7 @@
     const pinjamanSection = document.getElementById('pinjamanSection');
     const simpananTabBtn = document.getElementById('simpananTabBtn');
     const pinjamanTabBtn = document.getElementById('pinjamanTabBtn');
-    const transaksiNavLink = document.getElementById('transaksiNavLink');
+    // const transaksiNavLink = document.getElementById('transaksiNavLink'); // This element is not in the HTML for direct event listening
     const sortSimpananDropdown = document.getElementById('sortSimpanan');
     const sortPinjamanDropdown = document.getElementById('sortPinjaman');
     const simpananCardsContainer = document.getElementById('simpananCardsContainer'); // New container
@@ -267,7 +345,26 @@
     const modalConfirmBtn = document.getElementById('modalConfirmBtn');
     const modalCancelBtn = document.getElementById('modalCancelBtn');
 
+    // References for Logout Modal (consistent with dashboard/feedback)
+    const logoutButton = document.getElementById('logoutButton');
+    const logoutModal = document.getElementById('logoutModal');
+    const cancelLogout = document.getElementById('cancelLogout');
+    const confirmLogout = document.getElementById('confirmLogout');
+    const userMenuButton = document.getElementById('userMenuButton');
+    const userMenuDropdown = document.getElementById('userMenuDropdown');
+
+
     let resolveModalPromise; // Variabel untuk menyimpan fungsi resolve dari Promise
+
+    // Authentication check on page load
+    onAuthStateChanged(auth, user => {
+      if (!user) {
+        window.location.href = '/login'; // Redirect to login if not authenticated
+      } else {
+        // Load initial data (display simpanan tab by default)
+        switchTab('simpanan');
+      }
+    });
 
     /**
      * Menampilkan modal konfirmasi dengan pesan tertentu.
@@ -312,11 +409,13 @@
     function getStatusBadgeClass(status) {
       switch (status) {
         case 'Menunggu':
-          return 'status-pending';
+          return 'status-Menunggu'; // Refers to the custom class
         case 'Disetujui':
-          return 'status-approved';
+          return 'status-Disetujui'; // Refers to the custom class
+        case 'Aktif': // Added Active status for pinjaman
+          return 'status-Aktif'; // Refers to the custom class
         case 'Ditolak':
-          return 'status-rejected';
+          return 'status-Ditolak'; // Refers to the custom class
         default:
           return 'bg-gray-200 text-gray-800'; // Default styling
       }
@@ -343,6 +442,7 @@
      * Memuat dan menampilkan data transaksi simpanan dari Firestore dalam bentuk kartu.
      */
     async function loadSimpanan() {
+      simpananCardsContainer.innerHTML = '<p class="text-center text-gray-500 py-8">Memuat data simpanan...</p>'; // Show loading state
       try {
         const snapshot = await getDocs(collection(db, 'simpanan'));
         let dataArray = [];
@@ -360,35 +460,33 @@
 
         let html = '';
         if (dataArray.length === 0) {
-          html = '<p class="text-center text-gray-500">Tidak ada data simpanan.</p>';
+          html = '<p class="text-center text-gray-500 py-8">Tidak ada data simpanan.</p>';
         } else {
           dataArray.forEach(data => {
             // Use getDateFromDoc for consistent date display
             const displayDate = getDateFromDoc(data);
-            const formattedDate = displayDate.toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' });
-            // Get the date for the top-right corner, formatted as "DD Mon YYYY"
             const formattedHeaderDate = displayDate.toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' });
 
             html += `
-              <div class="transaction-card">
+              <div class="manage-transaction-card">
                 <div class="transaction-card-header">
-                  <div class="flex items-center gap-3">
-                    <i class="fas fa-user-circle text-emerald-700 text-3xl"></i> <!-- Icon dan warna hijau -->
-                    <span class="text-xl font-bold text-emerald-700">${formatRupiah(data.jumlah)}</span> <!-- Warna hijau -->
+                  <div class="amount-display">
+                    <i class="fas fa-user-circle text-emerald-700 text-3xl"></i>
+                    <span class="text-xl font-bold text-emerald-700">${formatRupiah(data.jumlah)}</span>
                   </div>
-                  <span class="text-gray-600 text-sm font-medium">${formattedHeaderDate}</span> <!-- Tanggal di kanan atas, warna abu-abu -->
+                  <span class="text-gray-600 text-sm font-medium">${formattedHeaderDate}</span>
                 </div>
                 <div class="flex flex-col gap-2">
                     <div class="transaction-card-detail">
-                        <i class="fas fa-envelope text-gray-500"></i>
+                        <i class="fas fa-envelope"></i>
                         <span>Pengaju: ${data.userEmail || '-'}</span>
                     </div>
                     <div class="transaction-card-detail">
-                        <i class="fas fa-info-circle text-gray-500"></i>
+                        <i class="fas fa-info-circle"></i>
                         <span>Keterangan: ${data.keterangan || '-'}</span>
                     </div>
                     <div class="transaction-card-detail">
-                        <i class="fas fa-tasks text-gray-500"></i>
+                        <i class="fas fa-tasks"></i>
                         <span>Status: <span class="status-badge ${getStatusBadgeClass(data.status)}">${data.status || '-'}</span></span>
                     </div>
                 </div>
@@ -410,7 +508,7 @@
         simpananCardsContainer.innerHTML = html;
       } catch (error) {
         console.error("Error loading simpanan data:", error);
-        simpananCardsContainer.innerHTML = '<p class="text-center text-red-500">Gagal memuat data simpanan.</p>';
+        simpananCardsContainer.innerHTML = '<p class="text-center text-red-500 py-8">Gagal memuat data simpanan.</p>';
       }
     }
 
@@ -418,6 +516,7 @@
      * Memuat dan menampilkan data transaksi pinjaman dari Firestore dalam bentuk kartu.
      */
     async function loadPinjaman() {
+      pinjamanCardsContainer.innerHTML = '<p class="text-center text-gray-500 py-8">Memuat data pinjaman...</p>'; // Show loading state
       try {
         const snapshot = await getDocs(collection(db, 'pinjaman'));
         let dataArray = [];
@@ -435,35 +534,33 @@
 
         let html = '';
         if (dataArray.length === 0) {
-          html = '<p class="text-center text-gray-500">Tidak ada data pinjaman.</p>';
+          html = '<p class="text-center text-gray-500 py-8">Tidak ada data pinjaman.</p>';
         } else {
           dataArray.forEach(data => {
             // Use getDateFromDoc for consistent date display
             const displayDate = getDateFromDoc(data);
-            const formattedDate = displayDate.toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' });
-            // Get the date for the top-right corner, formatted as "DD Mon YYYY"
             const formattedHeaderDate = displayDate.toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' });
 
             html += `
-              <div class="transaction-card">
+              <div class="manage-transaction-card">
                 <div class="transaction-card-header">
-                  <div class="flex items-center gap-3">
-                    <i class="fas fa-user-circle text-emerald-700 text-3xl"></i> <!-- Icon dan warna hijau -->
-                    <span class="text-xl font-bold text-emerald-700">${formatRupiah(data.jumlah)}</span> <!-- Warna hijau -->
+                  <div class="amount-display">
+                    <i class="fas fa-user-circle text-emerald-700 text-3xl"></i>
+                    <span class="text-xl font-bold text-emerald-700">${formatRupiah(data.jumlah)}</span>
                   </div>
-                  <span class="text-gray-600 text-sm font-medium">${formattedHeaderDate}</span> <!-- Tanggal di kanan atas, warna abu-abu -->
+                  <span class="text-gray-600 text-sm font-medium">${formattedHeaderDate}</span>
                 </div>
                 <div class="flex flex-col gap-2">
                     <div class="transaction-card-detail">
-                        <i class="fas fa-envelope text-gray-500"></i>
+                        <i class="fas fa-envelope"></i>
                         <span>Pengaju: ${data.userEmail || '-'}</span>
                     </div>
                     <div class="transaction-card-detail">
-                        <i class="fas fa-bullseye text-gray-500"></i>
+                        <i class="fas fa-bullseye"></i>
                         <span>Tujuan: ${data.tujuan || '-'}</span>
                     </div>
                     <div class="transaction-card-detail">
-                        <i class="fas fa-tasks text-gray-500"></i>
+                        <i class="fas fa-tasks"></i>
                         <span>Status: <span class="status-badge ${getStatusBadgeClass(data.status)}">${data.status || '-'}</span></span>
                     </div>
                 </div>
@@ -485,7 +582,7 @@
         pinjamanCardsContainer.innerHTML = html;
       } catch (error) {
         console.error("Error loading pinjaman data:", error);
-        pinjamanCardsContainer.innerHTML = '<p class="text-center text-red-500">Gagal memuat data pinjaman.</p>';
+        pinjamanCardsContainer.innerHTML = '<p class="text-center text-red-500 py-8">Gagal memuat data pinjaman.</p>';
       }
     }
 
@@ -524,7 +621,7 @@
     /**
      * Fungsi global untuk mengubah status transaksi pinjaman.
      * @param {string} id ID dokumen pinjaman yang akan diubah.
-     * @param {string} statusBaru Status baru (e.g., 'Disetujui', 'Ditolak').
+     * @param {string} statusBaru Status baru (e.g., 'Disetujui', 'Ditolak', 'Aktif').
      */
     window.ubahStatusPinjaman = async function(id, statusBaru) {
       const confirmed = await showConfirmationModal(`Ubah status pinjaman menjadi ${statusBaru}?`);
@@ -555,16 +652,10 @@
       }
     }
 
-    /**
-     * Fungsi dummy untuk edit pinjaman. Anda bisa menambahkan modal edit di sini.
-     * Ini tidak akan dipanggil lagi setelah tombol dihapus dari UI.
-     * @param {string} id ID dokumen pinjaman yang akan diedit.
-     */
+    // Fungsi dummy edit pinjaman, tidak lagi dipanggil di UI.
     window.editPinjaman = async function(id) {
         // alert("Fungsi edit pinjaman untuk ID: " + id + " akan datang segera!");
-        // Anda bisa menambahkan modal atau form untuk mengedit data pinjaman di sini.
     }
-
 
     /**
      * Mengelola pergantian tab antara Simpanan dan Pinjaman.
@@ -598,16 +689,49 @@
     sortSimpananDropdown.addEventListener('change', loadSimpanan);
     sortPinjamanDropdown.addEventListener('change', loadPinjaman);
 
-
-    // Event listener untuk navigasi "Kelola Transaksi"
-    transaksiNavLink.addEventListener('click', (e) => {
-      e.preventDefault(); // Mencegah navigasi default
-      // Di sini, Anda bisa mengarahkan ke halaman ini sendiri atau cukup memastikan tab pertama aktif
-      switchTab('simpanan'); // Secara default, tampilkan tab simpanan
+    // --- Logout Modal Logic (Copied from Dashboard) ---
+    logoutButton.addEventListener('click', (e) => {
+      e.preventDefault();
+      logoutModal.classList.remove('hidden');
     });
 
-    // Muat data awal (tampilkan tab simpanan secara default)
-    switchTab('simpanan');
+    cancelLogout.addEventListener('click', () => {
+      logoutModal.classList.add('hidden');
+    });
+
+    confirmLogout.addEventListener('click', async () => {
+      try {
+        await signOut(auth);
+        window.location.href = '/login';
+      } catch (error) {
+        console.error("Error signing out: ", error);
+        alert("Gagal logout. Silakan coba lagi.");
+      }
+    });
+
+    // Toggle user menu dropdown on button click for better UX
+    userMenuButton.addEventListener('click', (e) => {
+        e.stopPropagation(); // Prevent click from bubbling to document and closing immediately
+        userMenuDropdown.classList.toggle('hidden');
+        if (userMenuDropdown.classList.contains('hidden')) {
+            userMenuDropdown.classList.remove('opacity-100', 'scale-100');
+            userMenuDropdown.classList.add('opacity-0', 'scale-95');
+        } else {
+            userMenuDropdown.classList.remove('opacity-0', 'scale-95');
+            userMenuDropdown.classList.add('opacity-100', 'scale-100');
+        }
+    });
+
+    // Close dropdown if clicked outside
+    document.addEventListener('click', (e) => {
+        if (!userMenuButton.contains(e.target) && !userMenuDropdown.contains(e.target)) {
+            userMenuDropdown.classList.add('hidden');
+            userMenuDropdown.classList.add('opacity-0');
+            userMenuDropdown.classList.add('scale-95');
+        }
+    });
+    // --- End Logout Modal Logic ---
+
   </script>
 </body>
 </html>
