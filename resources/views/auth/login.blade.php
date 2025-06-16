@@ -8,6 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
+        /* Your existing CSS remains here */
         * {
             margin: 0;
             padding: 0;
@@ -45,7 +46,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M54.627 0l.83.828-1.415 1.415L51.8 0h2.827zM5.373 0l-.83.828L5.96 2.243 8.2 0H5.374zM48.97 0l3.657 3.657-1.414 1.414L46.143 0h2.828zM11.03 0L7.372 3.657 8.787 5.07 13.857 0H11.03zm32.284 0L49.8 6.485 48.384 7.9l-7.9-7.9h2.83zM16.686 0L10.2 6.485 11.616 7.9l7.9-7.9h-2.83zM22.343 0L13.8 8.544 15.214 9.96l9.9-9.96h-2.77zM32 0l-9.9 9.9 1.415 1.415L34.357 0H32zm-3.657 0l-8.486 8.485 1.415 1.415L30.7 0h-2.357zm-12.728 0l-6.364 6.364 1.414 1.414L23.8 0H15.615zM38 0l-1.414 1.414L40.97 5.8 42.384 4.385 38 0zm-6.656 0L28.97 2.374l1.414 1.415L34.8 0h-3.457zm-12.728 0l-2.374 2.374 1.414 1.415L21.8 0H18.615zM44 0l-1.414 1.414 3.414 3.414L47.414 3.4 44 0zm-6.656 0L34.97 2.374l1.414 1.415L40.8 0h-3.457zm-12.728 0l-2.374 2.374 1.414 1.415L27.8 0H24.615zM50 0l-1.414 1.414 1.414 1.414L51.414 1.4 50 0zm-6.656 0L40.97 2.374l1.414 1.415L46.8 0h-3.457zM32 0l-2.374 2.374 1.414 1.415L33.8 0H32zm12.728 0l-2.374 2.374 1.414 1.415L45.8 0H44.728zm-25.456 0l-2.374 2.374 1.414 1.415L21.8 0H19.272zm-6.656 0l-2.374 2.374 1.414 1.415L15.143 0h-2.457zM38 0l-2.374 2.374 1.414 1.415L39.8 0H38zm-6.656 0L28.97 2.374l1.414 1.415L33.8 0h-2.457zM25.272 0l-2.374 2.374 1.414 1.415L27.8 0h-2.528zm-6.656 0l-2.374 2.374 1.414 1.415L21.143 0h-2.457zM44 0l-2.374 2.374 1.414 1.415L45.8 0H44zm-6.656 0L34.97 2.374l1.414 1.415L39.8 0h-2.457zM31.272 0l-2.374 2.374 1.414 1.415L33.8 0h-2.528zm-6.656 0l-2.374 2.374 1.414 1.415L27.143 0h-2.457zM50 0l-2.374 2.374 1.414 1.415L51.8 0H50zm-6.656 0L40.97 2.374l1.414 1.415L45.8 0h-2.457zM37.272 0l-2.374 2.374 1.414 1.415L39.8 0h-2.528zm-6.656 0l-2.374 2.374 1.414 1.415L33.143 0h-2.457zM43.272 0l-2.374 2.374 1.414 1.415L45.8 0h-2.528zm-6.656 0l-2.374 2.374 1.414 1.415L39.143 0h-2.457z' fill='%23ffffff' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E");
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M54.627 0l.83.828-1.415 1.415L51.8 0h2.827zM5.373 0l-.83.828L5.96 2.243 8.2 0H5.374zM48.97 0l3.657 3.657-1.414 1.414L46.143 0h2.828zM11.03 0L7.372 3.657 8.787 5.07 13.857 0H11.03zm32.284 0L49.8 6.485 48.384 7.9l-7.9-7.9h2.83zM16.686 0L10.2 6.485 11.616 7.9l7.9-7.9h-2.83zM22.343 0L13.8 8.544 15.214 9.96l9.9-9.96h-2.77zM32 0l-9.9 9.9 1.415 1.415L34.357 0H32zm-3.657 0l-8.486 8.485 1.415 1.415L30.7 0h-2.357zm-12.728 0l-6.364 6.364 1.414 1.414L23.8 0H15.615zM38 0l-1.414 1.414L40.97 5.8 42.384 4.385 38 0zm-6.656 0L28.97 2.374l1.414 1.415L34.8 0h-3.457zm-12.728 0l-2.374 2.374 1.414 1.415L21.8 0H18.615zM44 0l-1.414 1.414 3.414 3.414L47.414 3.4 44 0zm-6.656 0L34.97 2.374l1.414 1.415L40.8 0h-3.457zm-12.728 0l-2.374 2.374 1.414 1.415L27.8 0H24.615zM50 0l-1.414 1.414 1.414 1.414L51.414 1.4 50 0zm-6.656 0L40.97 2.374l1.414 1.415L46.8 0h-3.457zM32 0l-2.374 2.374 1.414 1.415L33.8 0h-2.374zm12.728 0l-2.374 2.374 1.414 1.415L45.8 0h-1.072zm-25.456 0l-2.374 2.374 1.414 1.415L21.8 0H19.272zm-6.656 0l-2.374 2.374 1.414 1.415L15.143 0h-2.457zM38 0l-2.374 2.374 1.414 1.415L39.8 0H38zm-6.656 0L28.97 2.374l1.414 1.415L33.8 0h-2.457zM25.272 0l-2.374 2.374 1.414 1.415L27.8 0h-2.528zm-6.656 0l-2.374 2.374 1.414 1.415L21.143 0h-2.457zM44 0l-2.374 2.374 1.414 1.415L45.8 0H44zm-6.656 0L34.97 2.374l1.414 1.415L39.8 0h-2.457zM31.272 0l-2.374 2.374 1.414 1.415L33.8 0h-2.528zm-6.656 0l-2.374 2.374 1.414 1.415L27.143 0h-2.457zM50 0l-2.374 2.374 1.414 1.415L51.8 0H50zm-6.656 0L40.97 2.374l1.414 1.415L45.8 0h-2.457zM37.272 0l-2.374 2.374 1.414 1.415L39.8 0h-2.528zm-6.656 0l-2.374 2.374 1.414 1.415L33.143 0h-2.457zM43.272 0l-2.374 2.374 1.414 1.415L45.8 0h-2.528zm-6.656 0l-2.374 2.374 1.414 1.415L39.143 0h-2.457z' fill='%23ffffff' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E");
         }
 
         .left-content {
@@ -409,7 +410,6 @@
         </div>
     </div>
 
-    <!-- Firebase Script -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
@@ -449,38 +449,57 @@
 
         /* --- Login handler --- */
         form.addEventListener("submit", async e => {
-        e.preventDefault();
-        errBox.textContent = "";
-        btn.disabled = true;
-        btn.textContent = "Loading...";
+            e.preventDefault();
+            errBox.textContent = ""; // Clear previous error
+            errBox.classList.remove('visible'); // Hide error box
+            btn.disabled = true;
+            btn.querySelector('span').textContent = "Loading..."; // Update button text for loading
 
-        try {
-            const cred = await signInWithEmailAndPassword(auth, emailEl.value, passEl.value);
+            try {
+                const cred = await signInWithEmailAndPassword(auth, emailEl.value, passEl.value);
 
-            if (remember.checked) {
-            localStorage.setItem("email", emailEl.value);
-            localStorage.setItem("password", passEl.value);
-            localStorage.setItem("rememberMe", "true");
-            } else {
-            localStorage.removeItem("email");
-            localStorage.removeItem("password");
-            localStorage.setItem("rememberMe", "false");
+                if (remember.checked) {
+                    localStorage.setItem("email", emailEl.value);
+                    // IMPORTANT: Storing password directly in localStorage is NOT secure.
+                    // For a real application, you should only remember the email,
+                    // and let the user re-enter the password.
+                    localStorage.setItem("password", passEl.value); 
+                    localStorage.setItem("rememberMe", "true");
+                } else {
+                    localStorage.removeItem("email");
+                    localStorage.removeItem("password"); // Also remove if "Remember Me" is unchecked
+                    localStorage.setItem("rememberMe", "false");
+                }
+
+                const snap = await getDoc(doc(db, "users", cred.user.uid));
+                const role = snap.exists() ? (snap.data().role || "mahasiswa") : "mahasiswa";
+
+                console.log("Role:", role);
+
+                window.location.href = role === "admin"
+                    ? "{{ url('/admin') }}"
+                    : "{{ url('/dashboard') }}";
+            } catch (err) {
+                console.error("Login error:", err); // Log the full error for debugging
+
+                let errorMessage = "Terjadi kesalahan. Silakan coba lagi."; // Default error message
+
+                if (err.code === 'auth/wrong-password') {
+                    errorMessage = 'Password salah. Mohon periksa kembali password Anda.';
+                } else if (err.code === 'auth/user-not-found' || err.code === 'auth/invalid-credential') {
+                    errorMessage = 'Email tidak ditemukan atau password salah.';
+                } else if (err.code === 'auth/invalid-email') {
+                    errorMessage = 'Format email tidak valid.';
+                } else if (err.code === 'auth/too-many-requests') {
+                    errorMessage = 'Terlalu banyak percobaan login. Akun Anda mungkin diblokir sementara.';
+                }
+
+                errBox.textContent = errorMessage;
+                errBox.classList.add('visible'); // Show the error box
+            } finally {
+                btn.disabled = false;
+                btn.querySelector('span').textContent = "Masuk"; // Restore button text
             }
-
-            const snap = await getDoc(doc(db, "users", cred.user.uid));
-            const role = snap.exists() ? (snap.data().role || "mahasiswa") : "mahasiswa";
-
-            console.log("Role:", role);
-
-            window.location.href = role === "admin"
-            ? "{{ url('/admin') }}"
-            : "{{ url('/dashboard') }}";
-        } catch (err) {
-            errBox.textContent = err.message;
-        } finally {
-            btn.disabled = false;
-            btn.textContent = "SIGN IN";
-        }
         });
 
       </script>

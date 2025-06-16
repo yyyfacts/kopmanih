@@ -211,12 +211,17 @@
             padding: 10px;
             background: #FEF2F2;
             border-radius: 8px;
-            display: none;
+            display: none; /* Hidden by default */
         }
 
         #error-message.visible {
             display: block;
             animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .auth-button {
@@ -333,6 +338,22 @@
                     </div>
 
                     <div class="form-group">
+                        <label for="faculty">Fakultas</label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-building"></i>
+                            <input type="text" id="faculty" name="faculty" placeholder="Masukkan fakultas Anda" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="phone">Nomor Telepon</label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-phone"></i>
+                            <input type="tel" id="phone" name="phone" placeholder="Masukkan nomor telepon Anda" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
                         <label for="email">Email</label>
                         <div class="input-wrapper">
                             <i class="fas fa-envelope"></i>
@@ -369,7 +390,6 @@
         </div>
     </div>
 
-    <!-- Firebase Script -->
     <script type="module">
       import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
       import { getAuth, createUserWithEmailAndPassword, sendEmailVerification, updateProfile } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
@@ -392,16 +412,23 @@
       window.registerUser = async function () {
         const name = document.getElementById('name').value.trim();
         const nim = document.getElementById('nim').value.trim();
-        const faculty = document.getElementById('faculty').value.trim();
-        const phone = document.getElementById('phone').value.trim();
+        // Corrected to get value from newly added input
+        const faculty = document.getElementById('faculty').value.trim(); 
+        // Corrected to get value from newly added input
+        const phone = document.getElementById('phone').value.trim();   
         const email = document.getElementById('email').value.trim();
         const password = document.getElementById('password').value;
-        const confirmPassword = document.getElementById('confirmPassword').value;
+        // Corrected ID
+        const confirmPassword = document.getElementById('password_confirmation').value; 
         const errorBox = document.getElementById('error-message');
+        
+        // Clear previous error messages and hide the box
         errorBox.textContent = '';
+        errorBox.classList.remove('visible');
 
         if (password !== confirmPassword) {
           errorBox.textContent = 'Passwords do not match.';
+          errorBox.classList.add('visible'); // Show the error message
           return;
         }
 
@@ -427,8 +454,22 @@
           alert("Registration successful! Please verify your email.");
           window.location.href = "/login";
         } catch (error) {
-          console.error(error);
-          errorBox.textContent = error.message;
+          console.error("Firebase registration error:", error);
+          let errorMessage = "An unknown error occurred. Please try again.";
+
+          // Provide more user-friendly error messages for common Firebase errors
+          if (error.code === 'auth/email-already-in-use') {
+            errorMessage = 'Email already in use. Please use a different email.';
+          } else if (error.code === 'auth/invalid-email') {
+            errorMessage = 'Invalid email address. Please enter a valid email.';
+          } else if (error.code === 'auth/weak-password') {
+            errorMessage = 'Password is too weak. Please choose a stronger password.';
+          } else if (error.message) {
+            errorMessage = error.message;
+          }
+          
+          errorBox.textContent = errorMessage;
+          errorBox.classList.add('visible'); // Show the error message
         }
       }
     </script>

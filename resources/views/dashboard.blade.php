@@ -1,305 +1,575 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-  <meta charset="UTF-8">
-  <title>Dashboard - Koperasi Mahasiswa</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-  <style>
-    :root {
-      --primary: #1a5f7a;
-      --primary-dark: #0f4c64;
-      --primary-light: #e8f4f8;
-      --secondary: #64748b;
-      --success: #10b981;
-      --danger: #ef4444;
-      --warning: #f59e0b;
-      --background: #f8fafc;
-      --surface: #ffffff;
-      --text: #0f172a;
-      --text-secondary: #475569;
-      --border: #e2e8f0;
-    }
+@extends('layouts.app')
 
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+@section('title', 'Dashboard')
 
-    body {
-      font-family: 'Inter', sans-serif;
-      background-color: var(--background);
-      color: var(--text);
-      line-height: 1.5;
-      min-height: 100vh;
-      display: flex;
-    }
+@push('styles')
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* General Styling - Menggabungkan dari kedua tema, prioritas tema Poppins */
+        :root {
+            --primary-color: #065f46; /* Hijau utama */
+            --primary-dark: #065f46; /* Sedikit lebih gelap dari primary */
+            --primary-light: #d1fae5; /* Sangat terang dari primary, untuk background aktif */
+            --secondary-color: #f9fafb; /* Kuning Cerah (dipertahankan untuk aksen kontras) */
+            
+            --text-color: #1f2937; /* Teks gelap */
+            --light-bg: #f9fafb; /* Background utama konten yang lebih terang */
+            --white: #fff;
+            --border-color: #e5e7eb; /* Warna border yang lebih netral */
+            --text-secondary-color: #6b7280; /* Warna teks sekunder */
+            --surface-color: #ffffff; /* Untuk background card/sidebar */
+        }
 
-    .sidebar {
-      width: 280px;
-      background: var(--surface);
-      border-right: 1px solid var(--border);
-      height: 100vh;
-      position: fixed;
-      padding: 2rem 0;
-      display: flex;
-      flex-direction: column;
-    }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-    .sidebar-header {
-      padding: 0 2rem 2rem;
-      border-bottom: 1px solid var(--border);
-    }
+        /* Perhatian: Style 'body' ini mungkin akan ditimpa oleh layout.app Anda */
+        body {
+            font-family: 'Poppins', sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--light-bg);
+            min-height: 100vh;
+            display: flex; /* Untuk layout sidebar-main-content */
+        }
 
-    .logo-container {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-    }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
 
-    .logo-container img {
-      height: 40px;
-      width: auto;
-    }
+        a {
+            text-decoration: none;
+            color: var(--primary-color);
+        }
 
-    .brand-name {
-      font-size: 1.25rem;
-      font-weight: 600;
-      color: var(--primary);
-    }
+        ul {
+            list-style: none;
+        }
 
-    .nav-menu {
-      padding: 2rem 1rem;
-      flex: 1;
-    }
+        /* Buttons */
+        .btn {
+            display: inline-block;
+            padding: 10px 25px;
+            border-radius: 5px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
 
-    .nav-item {
-      display: flex;
-      align-items: center;
-      padding: 0.75rem 1rem;
-      color: var(--text-secondary);
-      text-decoration: none;
-      border-radius: 0.5rem;
-      margin-bottom: 0.5rem;
-      transition: all 0.2s;
-    }
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: var(--white);
+            border: 2px solid var(--primary-color);
+        }
 
-    .nav-item i {
-      width: 1.5rem;
-      margin-right: 0.75rem;
-    }
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+            border-color: var(--primary-dark);
+        }
 
-    .nav-item:hover {
-      background: var(--primary-light);
-      color: var(--primary);
-    }
+        .btn-secondary {
+            background-color: var(--secondary-color);
+            color: var(--primary-color);
+            border: 2px solid var(--secondary-color);
+        }
 
-    .nav-item.active {
-      background: var(--primary-light);
-      color: var(--primary);
-      font-weight: 500;
-    }
+        .btn-secondary:hover {
+            background-color: var(--primary-color);
+            color: var(--white);
+            border-color: var(--primary-color);
+        }
 
-    .main-content {
-      flex: 1;
-      margin-left: 280px;
-      padding: 2rem;
-    }
+        .logout-btn {
+            padding: 0.5rem 1rem;
+            background: var(--surface-color);
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-size: 0.875rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.2s;
+        }
 
-    .top-bar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 2rem;
-    }
+        .logout-btn:hover {
+            background: var(--primary-light);
+            color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
 
-    .page-title {
-      font-size: 1.5rem;
-      font-weight: 600;
-      color: var(--text);
-    }
+        /* Sidebar Styling */
+        .sidebar {
+            width: 280px;
+            background: var(--surface-color);
+            border-right: 1px solid var(--border-color);
+            height: 100vh;
+            position: fixed;
+            padding: 2rem 0;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.05);
+        }
 
-    .user-menu {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-    }
+        .sidebar-header {
+            padding: 0 2rem 2rem;
+            border-bottom: 1px solid var(--border-color);
+        }
 
-    .logout-btn {
-      padding: 0.5rem 1rem;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      color: var(--text);
-      border-radius: 0.5rem;
-      cursor: pointer;
-      font-size: 0.875rem;
-      font-weight: 500;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      transition: all 0.2s;
-    }
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
 
-    .logout-btn:hover {
-      background: var(--primary-light);
-      color: var(--primary);
-      border-color: var(--primary);
-    }
+        .logo-container img {
+            height: 40px;
+            width: auto;
+        }
 
-    .dashboard-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1.5rem;
-      margin-bottom: 2rem;
-    }
+        .brand-name {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
 
-    .stat-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 0.75rem;
-      padding: 1.5rem;
-    }
+        .nav-menu {
+            padding: 2rem 1rem;
+            flex: 1;
+        }
 
-    .stat-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: start;
-      margin-bottom: 1rem;
-    }
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            color: var(--text-secondary-color);
+            text-decoration: none;
+            border-radius: 0.5rem;
+            margin-bottom: 0.5rem;
+            transition: all 0.2s;
+        }
 
-    .stat-title {
-      color: var(--text-secondary);
-      font-size: 0.875rem;
-      font-weight: 500;
-    }
+        .nav-item i {
+            width: 1.5rem;
+            margin-right: 0.75rem;
+        }
 
-    .stat-icon {
-      width: 2.5rem;
-      height: 2.5rem;
-      background: var(--primary-light);
-      color: var(--primary);
-      border-radius: 0.5rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
+        .nav-item:hover {
+            background: var(--primary-light);
+            color: var(--primary-color);
+        }
 
-    .stat-value {
-      font-size: 1.5rem;
-      font-weight: 600;
-      color: var(--text);
-      margin-bottom: 0.25rem;
-    }
+        .nav-item.active {
+            background: var(--primary-light);
+            color: var(--primary-color);
+            font-weight: 600;
+        }
 
-    .stat-description {
-      font-size: 0.875rem;
-      color: var(--text-secondary);
-    }
+        /* Main Content Area */
+        .main-content {
+            flex: 1;
+            margin-left: 280px;
+            padding: 2rem;
+        }
 
-    .content-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 0.75rem;
-      overflow: hidden;
-    }
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--border-color);
+        }
 
-    .card-header {
-      padding: 1.25rem 1.5rem;
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
+        .page-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
 
-    .card-title {
-      font-size: 1rem;
-      font-weight: 600;
-      color: var(--text);
-    }
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
 
-    .transaction-list {
-      padding: 1rem 1.5rem;
-    }
+        .user-email {
+            color: var(--text-color);
+            font-weight: 500;
+        }
 
-    .transaction-item {
-      display: flex;
-      align-items: center;
-      padding: 1rem 0;
-      border-bottom: 1px solid var(--border);
-    }
+        /* Hero Slider Section */
+        .hero-slider-section {
+            position: relative;
+            width: 100%;
+            height: 400px;
+            overflow: hidden;
+            border-radius: 0.75rem;
+            margin-top: 2rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            background-color: var(--surface-color);
+        }
 
-    .transaction-item:last-child {
-      border-bottom: none;
-    }
+        .slider-container {
+            display: flex;
+            height: 100%;
+            transition: transform 0.8s ease-in-out;
+        }
 
-    .transaction-icon {
-      width: 2.5rem;
-      height: 2.5rem;
-      background: var(--primary-light);
-      color: var(--primary);
-      border-radius: 0.5rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-right: 1rem;
-    }
+        .slider-item {
+            min-width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            flex-shrink: 0;
+            padding: 40px;
+            background-size: cover;
+            background-position: center;
+            color: var(--white);
+            position: relative;
+        }
 
-    .transaction-info {
-      flex: 1;
-    }
+        .slider-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5); /* Dark overlay */
+            z-index: 1;
+        }
 
-    .transaction-title {
-      font-weight: 500;
-      color: var(--text);
-      margin-bottom: 0.25rem;
-    }
+        .slider-content {
+            position: relative;
+            z-index: 2;
+            max-width: 800px;
+        }
 
-    .transaction-date {
-      font-size: 0.875rem;
-      color: var(--text-secondary);
-    }
+        .slider-content h2 {
+            font-size: 2.8rem;
+            margin-bottom: 15px;
+            font-weight: 700;
+            color: var(--white);
+        }
 
-    .transaction-amount {
-      font-weight: 600;
-      color: var(--primary);
-    }
+        .slider-content p {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            color: var(--white);
+            opacity: 0.9;
+        }
 
-    @media (max-width: 1024px) {
-      .sidebar {
-        width: 5rem;
-      }
+        .slider-content .btn {
+            padding: 12px 30px;
+            font-size: 1.1rem;
+        }
 
-      .sidebar-header {
-        padding: 0 1rem 2rem;
-      }
+        /* Slide specific backgrounds - Menggunakan path relatif untuk Laravel */
+        .slide-1 {
+            background-image: url('{{ asset('images/tangan.jpg') }}');
+        }
+        .slide-2 {
+            background-image: url('{{ asset('images/babi.jpg') }}');
+        }
+        .slide-3 {
+            background-image: url('{{ asset('images/join.jpg') }}');
+        }
 
-      .brand-name {
-        display: none;
-      }
+        /* Pagination Dots */
+        .slider-dots {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+            z-index: 3;
+        }
 
-      .nav-item span {
-        display: none;
-      }
+        .dot {
+            width: 12px;
+            height: 12px;
+            background-color: rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
 
-      .main-content {
-        margin-left: 5rem;
-      }
+        .dot.active {
+            background-color: var(--secondary-color); /* Aksen kuning cerah untuk dot aktif */
+            transform: scale(1.2);
+        }
 
-      .dashboard-grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
-    }
+        /* CTA Section */
+        .cta-section {
+            background: linear-gradient(45deg, var(--primary-color), var(--primary-dark));
+            color: var(--white);
+            text-align: center;
+            padding: 60px 20px;
+            border-radius: 0.75rem;
+            margin-top: 2rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
 
-    @media (max-width: 768px) {
-      .dashboard-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-  </style>
-</head>
-<body>
+        .cta-section h2 {
+            font-size: 2.2rem;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        .cta-section p {
+            font-size: 1rem;
+            margin-bottom: 30px;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .btn-primary-outline {
+            background-color: transparent;
+            color: var(--white);
+            border: 2px solid var(--white);
+        }
+
+        .btn-primary-outline:hover {
+            background-color: var(--secondary-color);
+            color: var(--primary-color);
+            border: 2px solid var(--secondary-color);
+        }
+
+        /* Footer */
+        .main-footer {
+            background-color: var(--primary-dark);
+            color: var(--white);
+            padding: 40px 0 20px;
+            font-size: 0.85rem;
+            margin-top: 2rem;
+            border-radius: 0.75rem;
+            overflow: hidden;
+            box-shadow: 0 -5px 15px rgba(0,0,0,0.1);
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 30px;
+        }
+
+        .footer-col h3 {
+            font-size: 1.1rem;
+            color: var(--secondary-color);
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .footer-col ul li {
+            margin-bottom: 8px;
+        }
+
+        .footer-col ul li a {
+            color: var(--white);
+            opacity: 0.8;
+            transition: opacity 0.3s ease;
+        }
+
+        .footer-col ul li a:hover {
+            opacity: 1;
+            color: var(--secondary-color);
+        }
+
+        .footer-col p {
+            margin-bottom: 8px;
+            line-height: 1.6;
+            opacity: 0.8;
+        }
+
+        .footer-col p i {
+            margin-right: 8px;
+            color: var(--secondary-color);
+        }
+
+        .logo-col img {
+            height: 45px;
+            margin-bottom: 8px;
+        }
+
+        .logo-col p:first-of-type {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 3px;
+        }
+
+        .social-icons a {
+            color: var(--white);
+            font-size: 1.4rem;
+            margin-right: 12px;
+            transition: color 0.3s ease;
+        }
+
+        .social-icons a:hover {
+            color: var(--secondary-color);
+        }
+
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .sidebar {
+                width: 5rem;
+                padding: 1.5rem 0;
+            }
+
+            .sidebar-header {
+                padding: 0 1rem 1.5rem;
+            }
+
+            .brand-name {
+                display: none;
+            }
+
+            .nav-item span {
+                display: none;
+            }
+
+            .main-content {
+                margin-left: 5rem;
+                padding: 1.5rem;
+            }
+
+            .hero-slider-section {
+                height: 300px;
+            }
+
+            .slider-content h2 {
+                font-size: 2.2rem;
+            }
+
+            .slider-content p {
+                font-size: 1rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                position: relative;
+                width: 100%;
+                height: auto;
+                border-right: none;
+                border-bottom: 1px solid var(--border-color);
+                padding: 1rem 0;
+            }
+
+            .sidebar-header {
+                padding: 0 1rem 1rem;
+                border-bottom: none;
+                text-align: center;
+            }
+
+            .brand-name {
+                display: inline-block;
+            }
+
+            .nav-menu {
+                padding: 1rem;
+            }
+
+            .nav-menu ul {
+                 display: flex;
+                 flex-wrap: wrap;
+                 justify-content: center;
+                 gap: 10px;
+            }
+
+            .nav-item {
+                justify-content: center;
+                flex: 1 1 auto;
+                max-width: 150px;
+            }
+
+            .nav-item span {
+                display: block;
+                font-size: 0.8rem;
+                margin-top: 5px;
+            }
+
+            .nav-item i {
+                margin-right: 0;
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 1.5rem;
+            }
+
+            .top-bar {
+                flex-direction: column;
+                align-items: flex-start;
+                margin-bottom: 1.5rem;
+            }
+
+            .page-title {
+                margin-bottom: 1rem;
+            }
+
+            .hero-slider-section {
+                height: 250px;
+                padding: 20px;
+            }
+
+            .slider-content h2 {
+                font-size: 1.8rem;
+            }
+            .slider-content p {
+                font-size: 0.9rem;
+            }
+
+            .cta-section h2 {
+                font-size: 1.8rem;
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .social-icons {
+                margin-top: 15px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-slider-section {
+                height: 200px;
+            }
+            .slider-content h2 {
+                font-size: 1.5rem;
+            }
+            .slider-content p {
+                font-size: 0.8rem;
+            }
+            .slider-content .btn {
+                padding: 8px 20px;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+@endpush
+
+@section('content')
     <aside class="sidebar">
       <div class="sidebar-header">
         <div class="logo-container">
@@ -309,221 +579,186 @@
       </div>
 
       <nav class="nav-menu">
-        <a href="/dashboard" class="nav-item active">
+        <a href="{{ url('/dashboard') }}" class="nav-item active">
           <i class="fas fa-home"></i>
           <span>Dashboard</span>
         </a>
-        <a href="/pinjaman" class="nav-item">
+        <a href="{{ url('/pinjaman') }}" class="nav-item">
           <i class="fas fa-hand-holding-usd"></i>
           <span>Pinjaman</span>
         </a>
-        <a href="/simpanan" class="nav-item">
+        <a href="{{ url('/simpanan') }}" class="nav-item">
           <i class="fas fa-piggy-bank"></i>
           <span>Simpanan</span>
         </a>
-        <a href="/profil" class="nav-item">
+        <a href="{{ url('/profil') }}" class="nav-item">
           <i class="fas fa-user"></i>
           <span>Profil</span>
         </a>
-        <a href="/feedback" class="nav-item">
+        <a href="{{ url('/feedback') }}" class="nav-item">
           <i class="fas fa-comments"></i>
           <span>Feedback</span>
         </a>
-        <a href="/about" class="nav-item">
+        <a href="{{ url('/about') }}" class="nav-item">
           <i class="fas fa-info-circle"></i>
           <span>Tentang</span>
         </a>
       </nav>
     </aside>
 
-    <main class="main-content">
-      <div class="top-bar">
-        <h1 class="page-title">Dashboard</h1>
-        <div class="user-menu">
-          <span id="user-email" class="user-email">Memuat...</span>
-          <button class="logout-btn" onclick="logout()">
-            <i class="fas fa-sign-out-alt"></i>
-            <span>Logout</span>
-          </button>
-        </div>
-      </div>
-
-      <div class="dashboard-grid">
-        <div class="stat-card">
-          <div class="stat-header">
-            <div class="stat-title">Total Simpanan</div>
-            <div class="stat-icon">
-              <i class="fas fa-wallet"></i>
+        <section class="hero-slider-section">
+            <div class="slider-container" id="sliderContainer">
+                <div class="slider-item slide-1">
+                    <div class="slider-content">
+                        <h2>Ajukan Pinjaman Mahasiswa Cepat</h2>
+                        <p>Dapatkan dukungan finansial untuk studimu dengan proses yang mudah dan cepat dari KOPMA.</p>
+                        </div>
+                </div>
+                <div class="slider-item slide-2">
+                    <div class="slider-content">
+                        <h2>Mulai Simpanan Masa Depanmu</h2>
+                        <p>Investasikan dan kembangkan dana Anda dengan berbagai pilihan simpanan yang aman dan menguntungkan.</p>
+                        </div>
+                </div>
+                <div class="slider-item slide-3">
+                    <div class="slider-content">
+                        <h2>Jadilah Bagian dari Komunitas KOPMA</h2>
+                        <p>Bergabunglah dengan ribuan mahasiswa lainnya dan dapatkan manfaat eksklusif sebagai anggota.</p>
+                        </div>
+                </div>
             </div>
-          </div>
-          <div class="stat-value" id="total-simpanan">Rp 0</div>
-          <div class="stat-description">Total simpanan Anda saat ini</div>
-        </div>
+            <div class="slider-dots" id="sliderDots">
+                </div>
+        </section>
 
-        <div class="stat-card">
-          <div class="stat-header">
-            <div class="stat-title">Pinjaman Aktif</div>
-            <div class="stat-icon">
-              <i class="fas fa-credit-card"></i>
+        <footer class="main-footer">
+            <div class="container footer-grid">
+                <div class="footer-col logo-col">
+                    <img src="{{ asset('images/logokopma.png') }}" alt="Logo KOPMA">
+                    <p>KOPMA Universitas Telkom Purwokerto</p>
+                    <p>&copy; 2025 KOPMA Hak Cipta Dilindungi.</p>
+                </div>
+                <div class="footer-col">
+                    <h3>Informasi Kontak</h3>
+                    <p><i class="fas fa-map-marker-alt"></i> Jalan jalan ke bangladesh</p>
+                    <p><i class="fas fa-envelope"></i> info@kopma-universitas.ac.id</p>
+                    <p><i class="fas fa-phone"></i> (021) 12345678</p>
+                </div>
+                <div class="footer-col">
+                    <h3>Ikuti Kami</h3>
+                    <div class="social-icons">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
             </div>
-          </div>
-          <div class="stat-value" id="pinjaman-aktif">0</div>
-          <div class="stat-description">Jumlah pinjaman yang sedang berjalan</div>
-        </div>
-
-        <div class="stat-card">
-          <div class="stat-header">
-            <div class="stat-title">Status Keanggotaan</div>
-            <div class="stat-icon">
-              <i class="fas fa-user-check"></i>
-            </div>
-          </div>
-          <div class="stat-value" id="user-role">-</div>
-          <div class="stat-description">Status keanggotaan Anda</div>
-        </div>
-      </div>
-
-      <div class="content-card">
-        <div class="card-header">
-          <h2 class="card-title">Transaksi Terbaru</h2>
-          <div class="card-actions">
-            <button class="logout-btn">
-              <i class="fas fa-sync-alt"></i>
-              <span>Refresh</span>
-            </button>
-          </div>
-        </div>
-        <div class="transaction-list" id="transaction-list">
-          <!-- Transactions will be inserted here -->
-        </div>
-      </div>
+        </footer>
     </main>
+@endsection
 
+@push('scripts')
     <script type="module">
-      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-      import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-      import { getFirestore, doc, getDoc, collection, query, orderBy, limit, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+        import { getFirestore, doc, getDoc, collection, query, orderBy, limit, getDocs, where } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-      const firebaseConfig = {
-        apiKey: "AIzaSyAuq0JEjnEOagJnONPemkMP0bbgqepiFp8",
-        authDomain: "koperasimahasiswaapp.firebaseapp.com",
-        projectId: "koperasimahasiswaapp",
-        storageBucket: "koperasimahasiswaapp.appspot.com",
-        messagingSenderId: "812843080953",
-        appId: "1:812843080953:web:9a931f89186182660bd628"
-      };
+        const firebaseConfig = {
+            apiKey: "AIzaSyAuq0JEjnEOagJnONPemkMP0bbgqepiFp8",
+            authDomain: "koperasimahasiswaapp.firebaseapp.com",
+            projectId: "koperasimahasiswaapp",
+            storageBucket: "koperasimahasiswaapp.appspot.com",
+            messagingSenderId: "812843080953",
+            appId: "1:812843080953:web:9a931f89186182660bd628"
+        };
 
-      const app = initializeApp(firebaseConfig);
-      const auth = getAuth(app);
-      const db = getFirestore(app);
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
 
-      // Format currency
-      const formatCurrency = (amount) => {
-        return new Intl.NumberFormat('id-ID', {
-          style: 'currency',
-          currency: 'IDR',
-          minimumFractionDigits: 0,
-          maximumFractionDigits: 0
-        }).format(amount);
-      };
+        // Firebase Auth State Listener
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                document.getElementById('user-email').textContent = user.email;
+                const userDoc = await getDoc(doc(db, "users", user.uid));
+                const userData = userDoc.exists() ? userDoc.data() : {};
+                const role = userData.role || "mahasiswa";
 
-      // Format date
-      const formatDate = (date) => {
-        return new Intl.DateTimeFormat('id-ID', {
-          day: 'numeric',
-          month: 'long',
-          year: 'numeric',
-          hour: '2-digit',
-          minute: '2-digit'
-        }).format(date);
-      };
+                const simpananQuery = query(collection(db, "simpanan"), where("userId", "==", user.uid));
+                const simpananSnapshot = await getDocs(simpananQuery);
+                let totalSimpanan = 0;
+                simpananSnapshot.docs.forEach(doc => {
+                    const data = doc.data();
+                    if (data.status === 'Disetujui') {
+                        totalSimpanan += (parseFloat(data.jumlah) || 0);
+                    }
+                });
 
-      onAuthStateChanged(auth, async (user) => {
-        if (user) {
-          document.getElementById('user-email').textContent = user.email;
+                const pinjamanQuery = query(collection(db, "pinjaman"), where("userId", "==", user.uid));
+                const pinjamanSnapshot = await getDocs(pinjamanQuery);
+                let aktifCount = 0;
+                pinjamanSnapshot.docs.forEach(doc => {
+                    const status = doc.data().status;
+                    if (status === 'Diterima') {
+                        aktifCount++;
+                    }
+                });
 
-          // Get user data and role
-          const userDoc = await getDoc(doc(db, "users", user.uid));
-          const userData = userDoc.exists() ? userDoc.data() : {};
-          const role = userData.role || "mahasiswa";
-          document.getElementById('user-role').textContent = role.charAt(0).toUpperCase() + role.slice(1);
-
-          // Get total simpanan
-          const simpananQuery = query(
-            collection(db, "simpanan"),
-            where("userId", "==", user.uid)
-          );
-          const simpananSnapshot = await getDocs(simpananQuery);
-          const totalSimpanan = simpananSnapshot.docs.reduce((sum, doc) => {
-            return sum + (doc.data().jumlah || 0);
-          }, 0);
-          document.getElementById('total-simpanan').textContent = formatCurrency(totalSimpanan);
-
-          // Get active pinjaman
-          const pinjamanQuery = query(
-            collection(db, "pinjaman"),
-            where("userId", "==", user.uid),
-            where("status", "==", "active")
-          );
-          const pinjamanSnapshot = await getDocs(pinjamanQuery);
-          document.getElementById('pinjaman-aktif').textContent = pinjamanSnapshot.docs.length;
-
-          // Load recent transactions
-          const transaksiRef = collection(db, "transaksi");
-          const q = query(transaksiRef, orderBy("tanggal", "desc"), limit(5));
-          const snapshot = await getDocs(q);
-
-          const transactionList = document.getElementById('transaction-list');
-          transactionList.innerHTML = "";
-
-          if (snapshot.empty) {
-            transactionList.innerHTML = `
-              <div class="transaction-item">
-                <div class="transaction-icon">
-                  <i class="fas fa-info-circle"></i>
-                </div>
-                <div class="transaction-info">
-                  <div class="transaction-title">Belum ada transaksi</div>
-                  <div class="transaction-date">Tidak ada data transaksi untuk ditampilkan</div>
-                </div>
-              </div>
-            `;
-          } else {
-            snapshot.forEach(doc => {
-              const data = doc.data();
-              const date = new Date(data.tanggal.seconds * 1000);
-              
-              const transactionHTML = `
-                <div class="transaction-item">
-                  <div class="transaction-icon">
-                    <i class="fas ${data.type === 'simpanan' ? 'fa-piggy-bank' : 'fa-hand-holding-usd'}"></i>
-                  </div>
-                  <div class="transaction-info">
-                    <div class="transaction-title">${data.nama}</div>
-                    <div class="transaction-date">${formatDate(date)}</div>
-                  </div>
-                  <div class="transaction-amount">
-                    ${formatCurrency(data.jumlah)}
-                  </div>
-                </div>
-              `;
-              transactionList.insertAdjacentHTML('beforeend', transactionHTML);
-            });
-          }
-        } else {
-          window.location.href = "/login";
-        }
-      });
-
-      window.logout = function() {
-        signOut(auth).then(() => {
-          localStorage.clear();
-          window.location.href = "/login";
-        }).catch((error) => {
-          console.error("Logout gagal:", error);
+            } else {
+                window.location.href = "{{ url('/login') }}"; // Menggunakan url() untuk login
+            }
         });
-      };
-    </script>
 
-</body>
-</html>
+        window.logout = function() {
+            signOut(auth).then(() => {
+                localStorage.clear();
+                window.location.href = "{{ url('/login') }}"; // Menggunakan url() untuk login
+            }).catch((error) => {
+                console.error("Logout gagal:", error);
+            });
+        };
+
+        // Slider Functionality
+        const sliderContainer = document.getElementById('sliderContainer');
+        const sliderItems = document.querySelectorAll('.slider-item');
+        const sliderDotsContainer = document.getElementById('sliderDots');
+        let currentIndex = 0;
+        const slideInterval = 5000; // 5 seconds
+
+        function createDots() {
+            sliderItems.forEach((_, index) => {
+                const dot = document.createElement('div');
+                dot.classList.add('dot');
+                if (index === 0) {
+                    dot.classList.add('active');
+                }
+                dot.addEventListener('click', () => goToSlide(index));
+                sliderDotsContainer.appendChild(dot);
+            });
+        }
+
+        function updateDots() {
+            const dots = document.querySelectorAll('.dot');
+            dots.forEach((dot, index) => {
+                dot.classList.toggle('active', index === currentIndex);
+            });
+        }
+
+        function goToSlide(index) {
+            currentIndex = index;
+            const offset = -currentIndex * 100;
+            sliderContainer.style.transform = `translateX(${offset}%)`;
+            updateDots();
+        }
+
+        function nextSlide() {
+            currentIndex = (currentIndex + 1) % sliderItems.length;
+            goToSlide(currentIndex);
+        }
+
+        // Initialize slider
+        createDots();
+        setInterval(nextSlide, slideInterval);
+    </script>
+@endpush

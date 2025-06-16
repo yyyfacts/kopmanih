@@ -6,8 +6,6 @@
     <div class="content-wrapper">
         <!-- Page Header -->
         <div class="page-header">
-            <div class="page-header-content">
-                <h1 class="page-title">Manajemen Pinjaman</h1>
                 <div class="page-actions">
                     <button type="button" class="btn-primary" onclick="openModal()">
                         <i class="fas fa-plus"></i>
@@ -242,6 +240,7 @@
 
         const payload = {
           userId     : currentUid,
+          userEmail  : auth.currentUser.email,
           tujuan     : tujuanInput.value,
           jumlah     : nominal,
           keterangan : ketInput.value.trim(),
@@ -864,23 +863,29 @@
     };
 
     const getStatusBadge = (status) => {
-        const statusClasses = {
-            'Menunggu': 'status-pending',
-            'Diterima': 'status-approved',
-            'Ditolak': 'status-rejected'
-        };
-        const statusIcons = {
-            'Menunggu': 'clock',
-            'Diterima': 'check-circle',
-            'Ditolak': 'times-circle'
-        };
-        const className = statusClasses[status] || 'status-pending';
-        const icon = statusIcons[status] || 'clock';
+        let className = 'status-pending'; // Default class for 'Menunggu'
+        let icon = 'hourglass-half'; // Default icon for 'Menunggu'
+        let displayText = 'Menunggu'; // Default display text for 'Menunggu'
+
+        // Map Firebase status values (Indonesian) to CSS classes and icons
+        if (status === 'Disetujui') {
+            className = 'status-approved';
+            icon = 'check-circle';
+            displayText = 'Disetujui';
+        } else if (status === 'Menunggu') {
+            className = 'status-pending';
+            icon = 'hourglass-half';
+            displayText = 'Menunggu';
+        } else if (status === 'Ditolak') {
+            className = 'status-rejected';
+            icon = 'times-circle';
+            displayText = 'Ditolak';
+        }
         
         return `
             <span class="status-badge ${className}">
                 <i class="fas fa-${icon}"></i>
-                ${status || 'Menunggu'}
+                ${displayText}
             </span>
         `;
     };
@@ -918,7 +923,7 @@
 
                 // Update statistics
                 totalAmount += amount;
-                if (loan.status === 'Diterima') approvedCount++;
+                if (loan.status === 'Diterima' || loan.status === 'Disetujui') approvedCount++;
                 if (loan.status === 'Menunggu') pendingCount++;
 
                 // Create table row
@@ -961,55 +966,59 @@
     };
 
     // Handle Form Submission
-    window.handleSubmitLoan = async (event) => {
-        event.preventDefault();
-        const form = event.target;
-        const submitBtn = form.querySelector('button[type="submit"]');
-        
-        try {
-            submitBtn.disabled = true;
-            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Memproses...';
+   window.handleSubmitLoan = async (event) => {
+    event.preventDefault();
+    const form = event.target;
+    const submitBtn = form.querySelector('button[type="submit"]');
+    
+    try {
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Memproses...';
 
-            const jumlah = parseFloat(form.jumlah.value);
-            if (isNaN(jumlah) || jumlah < 100000) {
-                throw new Error('Jumlah pinjaman minimal Rp 100.000');
-            }
-
-            const loanData = {
-                userId: auth.currentUser.uid,
-                userName: auth.currentUser.email,
-                jumlah: jumlah,
-                tujuan: form.tujuan.value,
-                keterangan: form.keterangan.value,
-                status: 'Menunggu',
-                createdAt: serverTimestamp(),
-                updatedAt: serverTimestamp()
-            };
-
-            const loanId = form.loanId.value;
-            if (loanId) {
-                // Update existing loan
-                await updateDoc(doc(db, "pinjaman", loanId), {
-                    ...loanData,
-                    updatedAt: serverTimestamp()
-                });
-            } else {
-                // Create new loan
-                await addDoc(collection(db, "pinjaman"), loanData);
-            }
-
-            await loadLoans(auth.currentUser.uid);
-            window.closeModal();
-            alert(loanId ? 'Pinjaman berhasil diperbarui' : 'Pinjaman berhasil diajukan');
-
-        } catch (error) {
-            console.error("Error submitting loan:", error);
-            alert(error.message || "Terjadi kesalahan saat memproses pinjaman");
-        } finally {
-            submitBtn.disabled = false;
-            submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Ajukan Pinjaman';
+        const jumlah = parseFloat(form.jumlah.value);
+        if (isNaN(jumlah) || jumlah < 100000) {
+            throw new Error('Jumlah pinjaman minimal Rp 100.000');
         }
-    };
+
+        // Tambahkan field tanggal string (yyyy-MM-dd)
+        const todayStr = new Date().toISOString().slice(0, 10);
+
+   const loanData = {
+    userId: auth.currentUser.uid,
+    userEmail: auth.currentUser.email, // <-- Sudah benar!
+    jumlah: jumlah,
+    tujuan: form.tujuan.value,
+    keterangan: form.keterangan.value,
+    status: 'Menunggu',
+    tanggal: todayStr,
+    createdAt: serverTimestamp(),
+    updatedAt: serverTimestamp()
+};
+
+        const loanId = form.loanId.value;
+        if (loanId) {
+            // Update existing loan
+            await updateDoc(doc(db, "pinjaman", loanId), {
+                ...loanData,
+                updatedAt: serverTimestamp()
+            });
+        } else {
+            // Create new loan
+            await addDoc(collection(db, "pinjaman"), loanData);
+        }
+
+        await loadLoans(auth.currentUser.uid);
+        window.closeModal();
+        alert(loanId ? 'Pinjaman berhasil diperbarui' : 'Pinjaman berhasil diajukan');
+
+    } catch (error) {
+        console.error("Error submitting loan:", error);
+        alert(error.message || "Terjadi kesalahan saat memproses pinjaman");
+    } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Ajukan Pinjaman';
+    }
+};
 
     // View Loan Details
     window.viewLoan = async (loanId) => {
