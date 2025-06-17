@@ -58,6 +58,7 @@
         .modal-overlay.show {
             opacity: 1;
             visibility: visible;
+            display: flex;
         }
         .modal-content {
             background: white;
@@ -67,11 +68,11 @@
             text-align: center;
             max-width: 400px;
             width: 90%;
-            transform: translateY(-20px);
+            transform: translateY(-20px); /* Untuk animasi masuk dari atas */
             transition: transform 0.3s ease;
         }
         .modal-overlay.show .modal-content {
-            transform: translateY(0);
+            transform: translateY(0); /* Posisi akhir saat terlihat */
         }
         .modal-content p {
             margin-bottom: 1.5rem; /* Adjusted margin-bottom */
@@ -270,7 +271,9 @@
             outline: none;
             margin-right: 0.5rem;
         }
-
+        .btn-card i {
+            font-size: 1.1em;
+        }
         .btn-card-approve {
             background: #059669;
             color: #fff;
@@ -294,9 +297,37 @@
         .btn-card-delete:hover {
             background: #374151;
         }
-
-        .btn-card i {
-            font-size: 1.1em;
+        /* Tambahan untuk tombol hitam */
+        .btn-card-black {
+            background: #111827 !important;
+            color: #fff !important;
+            border: none;
+            transition: background 0.2s;
+        }
+        .btn-card-black:hover {
+            background: #000 !important;
+            color: #fff !important;
+        }
+        /* Status badge styles are already consistent */
+        .status-badge {
+            padding: 0.3rem 0.8rem;
+            border-radius: 9999px;
+            font-size: 0.75rem; /* Smaller font for badge */
+            font-weight: 600;
+            text-transform: uppercase; /* Uppercase for a more corporate look */
+            letter-spacing: 0.05em;
+        }
+        .status-Menunggu { /* Tailwind equivalent for the old classes */
+            background: #fefce8;
+            color: #a16207;
+        }
+        .status-Disetujui, .status-Aktif { /* Added Active status for consistency */
+            background: #dcfce7;
+            color: #15803d;
+        }
+        .status-Ditolak {
+            background: #fee2e2;
+            color: #b91c1c;
         }
 
         /* Styling untuk dropdown (konsisten dengan halaman dashboard & feedback) */
@@ -417,16 +448,16 @@
             </div>
         </div>
 
-        <div id="logoutModal" class="modal-overlay hidden">
-            <div class="modal-content">
-                <h3 class="text-xl font-semibold mb-4 text-gray-800">Konfirmasi Logout</h3>
-                <p class="text-gray-600 mb-6">Apakah Anda yakin ingin keluar dari akun admin?</p>
-                <div class="modal-buttons">
-                    <button id="cancelLogout" class="px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition duration-200 font-medium">Batal</button>
-                    <button id="confirmLogout" class="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition duration-200 font-medium">Logout</button>
-                </div>
+       <div id="logoutModal" class="modal-overlay">
+        <div class="modal-content">
+            <h3 class="text-xl font-semibold mb-4 text-gray-800">Konfirmasi Logout</h3>
+            <p class="text-gray-600 mb-6">Apakah Anda yakin ingin keluar dari akun admin?</p>
+            <div class="modal-buttons">
+                <button id="cancelLogout" class="px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition duration-200 font-medium">Batal</button>
+                <button id="confirmLogout" class="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition duration-200 font-medium">Logout</button>
             </div>
         </div>
+    </div>
     </div>
 
     <script type="module">
@@ -465,14 +496,11 @@
         const modalConfirmBtn = document.getElementById('modalConfirmBtn');
         const modalCancelBtn = document.getElementById('modalCancelBtn');
 
-        // References for Logout Modal (consistent with dashboard/feedback)
-        // Removed logoutButton as it doesn't exist in HTML for direct event listening
+        // References for Logout Modal
         const logoutModal = document.getElementById('logoutModal');
         const cancelLogout = document.getElementById('cancelLogout');
         const confirmLogout = document.getElementById('confirmLogout');
-        // Removed userMenuButton and userMenuDropdown as they don't exist in provided HTML
-        // const userMenuButton = document.getElementById('userMenuButton');
-        // const userMenuDropdown = document.getElementById('userMenuDropdown');
+        const sidebarLogoutBtn = document.getElementById('sidebarLogoutBtn');
 
 
         let resolveModalPromise; // Variabel untuk menyimpan fungsi resolve dari Promise
@@ -589,40 +617,40 @@
                         const formattedHeaderDate = displayDate.toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' });
 
                         html += `
-                            <div class="manage-transaction-card">
-                                <div class="transaction-card-header">
-                                    <div class="amount-display">
-                                        <i class="fas fa-user-circle text-emerald-700 text-3xl"></i>
-                                        <span class="text-xl font-bold text-emerald-700">${formatRupiah(data.jumlah)}</span>
-                                    </div>
-                                    <span class="text-gray-600 text-sm font-medium">${formattedHeaderDate}</span>
-                                </div>
-                                <div class="flex flex-col gap-2">
-                                    <div class="transaction-card-detail">
-                                        <i class="fas fa-envelope"></i>
-                                        <span>Pengaju: ${data.userEmail || '-'}</span>
-                                    </div>
-                                    <div class="transaction-card-detail">
-                                        <i class="fas fa-info-circle"></i>
-                                        <span>Keterangan: ${data.keterangan || '-'}</span>
-                                    </div>
-                                    <div class="transaction-card-detail">
-                                        <i class="fas fa-tasks"></i>
-                                        <span>Status: <span class="status-badge ${getStatusBadgeClass(data.status)}">${data.status || '-'}</span></span>
-                                    </div>
-                                </div>
-                                <div class="transaction-card-actions">
-                                    <button class="btn-card btn-card-approve" onclick="ubahStatusSimpanan('${data.id}', 'Disetujui')">
-                                        <i class="fas fa-check"></i> Setujui
-                                    </button>
-                                    <button class="btn-card btn-card-reject" onclick="ubahStatusSimpanan('${data.id}', 'Ditolak')">
-                                        <i class="fas fa-times"></i> Tolak
-                                    </button>
-                                    <button class="btn-card btn-card-delete" onclick="deleteSimpanan('${data.id}')">
-                                        <i class="fas fa-trash"></i> Hapus
-                                    </button>
-                                </div>
-                            </div>
+            <div class="manage-transaction-card">
+              <div class="transaction-card-header">
+                <div class="amount-display">
+                  <i class="fas fa-user-circle text-emerald-700 text-3xl"></i>
+                  <span class="text-xl font-bold text-emerald-700">${formatRupiah(data.jumlah)}</span>
+                </div>
+                <span class="text-gray-600 text-sm font-medium">${formattedHeaderDate}</span>
+              </div>
+              <div class="flex flex-col gap-2">
+                  <div class="transaction-card-detail">
+                      <i class="fas fa-envelope"></i>
+                      <span>Pengaju: ${data.userEmail || '-'}</span>
+                  </div>
+                  <div class="transaction-card-detail">
+                      <i class="fas fa-info-circle"></i>
+                      <span>Keterangan: ${data.keterangan || '-'}</span>
+                  </div>
+                  <div class="transaction-card-detail">
+                      <i class="fas fa-tasks"></i>
+                      <span>Status: <span class="status-badge ${getStatusBadgeClass(data.status)}">${data.status || '-'}</span></span>
+                  </div>
+              </div>
+              <div class="transaction-card-actions">
+                <button class="btn-card btn-card-approve" onclick="ubahStatusSimpanan('${data.id}', 'Disetujui')">
+                  <i class="fas fa-check"></i> Setujui
+                </button>
+                <button class="btn-card btn-card-reject" onclick="ubahStatusSimpanan('${data.id}', 'Ditolak')">
+                  <i class="fas fa-times"></i> Tolak
+                </button>
+                <button class="btn-card btn-card-delete" onclick="deleteSimpanan('${data.id}')">
+                  <i class="fas fa-trash"></i> Hapus
+                </button>
+              </div>
+            </div>
                         `;
                     });
                 }
@@ -810,21 +838,49 @@
         sortSimpananDropdown.addEventListener('change', loadSimpanan);
         sortPinjamanDropdown.addEventListener('change', loadPinjaman);
 
-        // --- Logout Modal Logic (Copied from Dashboard) ---
-        // Removed logoutButton.addEventListener as logoutButton element is not present in the HTML.
-        // The sidebarLogoutBtn already handles opening the modal.
+        // Function to show logout modal
+        function showLogoutModal() {
+            logoutModal.classList.add('show');
+        }
 
-        cancelLogout.addEventListener('click', () => {
-            logoutModal.classList.add('hidden');
-        });
+        // Function to hide logout modal
+        function hideLogoutModal() {
+            logoutModal.classList.remove('show');
+        }
 
-        confirmLogout.addEventListener('click', async () => {
+        // Logout function, exposed globally as in dashboard.blade.php
+        window.logout = async function() {
             try {
                 await signOut(auth);
-                window.location.href = '/login';
+                localStorage.clear(); // Clear local storage as in dashboard.blade.php
+                window.location.href = '/login'; // Redirect to login
             } catch (error) {
-                console.error("Error signing out: ", error);
+                console.error("Logout gagal:", error);
                 alert("Gagal logout. Silakan coba lagi.");
+            }
+        };
+
+        // --- Logout Modal Logic ---
+        sidebarLogoutBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            showLogoutModal();
+        });
+        cancelLogout.addEventListener('click', () => {
+            hideLogoutModal();
+        });
+        confirmLogout.addEventListener('click', async () => {
+            await window.logout(); // Call the global logout function
+        });
+
+        logoutModal.addEventListener('click', (e) => {
+        // Jika yang diklik adalah overlay modal itu sendiri (bukan konten modal)
+            if (e.target === logoutModal) {
+                hideLogoutModal();
+            }
+        });
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && logoutModal.classList.contains('show')) {
+                hideLogoutModal();
             }
         });
 
@@ -834,7 +890,6 @@
         sidebarToggle.addEventListener('click', () => {
             sidebar.classList.toggle('open');
         });
-        // Close sidebar on outside click (mobile)
         document.addEventListener('click', (e) => {
             if (window.innerWidth <= 1024 && sidebar.classList.contains('open')) {
                 if (!sidebar.contains(e.target) && !sidebarToggle.contains(e.target)) {
@@ -842,17 +897,6 @@
                 }
             }
         });
-        // Sidebar logout button triggers modal
-        const sidebarLogoutBtn = document.getElementById('sidebarLogoutBtn');
-        sidebarLogoutBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            logoutModal.classList.remove('hidden');
-        });
-        // Hide user menu dropdown (karena sudah di sidebar)
-        // Removed this line as userMenuDropdown is not defined and doesn't exist in the HTML provided for transaksi.blade.php
-        // if (userMenuDropdown) userMenuDropdown.style.display = 'none';
-        // --- End Logout Modal Logic ---
-
     </script>
 </body>
 </html>
