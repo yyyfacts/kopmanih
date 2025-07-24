@@ -1,0 +1,50 @@
+/* Custom Theme Colors & Typography */
+:root {
+  --primary: #256D85;
+  --secondary: #fff;
+  --accent: #00B2FF;
+  --danger: #e53e3e;
+  --success: #38a169;
+  --warning: #f6ad55;
+  --dark-bg: #181f2a;
+  --neon-green: #39ff14;
+  font-family: 'Roboto', Arial, sans-serif;
+}
+
+body {
+  background: var(--secondary);
+  color: #222;
+}
+
+.dark-mode {
+  background: var(--dark-bg);
+  color: var(--neon-green);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Poppins', Arial, sans-serif;
+}
+
+.btn-primary {
+  background: var(--primary);
+  color: #fff;
+  border-radius: 6px;
+  padding: 0.5rem 1.2rem;
+  font-weight: 600;
+  transition: background 0.2s;
+}
+
+.btn-primary:hover {
+  background: var(--accent);
+}
+
+.badge {
+  border-radius: 12px;
+  padding: 0.2rem 0.7rem;
+  font-size: 0.85em;
+  font-weight: 500;
+}
+
+.badge-success { background: var(--success); color: #fff; }
+.badge-danger { background: var(--danger); color: #fff; }
+.badge-warning { background: var(--warning); color: #222; }

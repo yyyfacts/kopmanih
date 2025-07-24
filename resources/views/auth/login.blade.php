@@ -50,7 +50,7 @@
                 </div>
 
                 <!-- Remember Me -->
-                <div class="flex items-center justify-between mb-6">
+                <div class="flex items-center mb-6">
                     <label for="remember_me" class="inline-flex items-center">
                         <input id="remember_me" 
                             type="checkbox" 
@@ -58,26 +58,12 @@
                             name="remember">
                         <span class="ms-2 text-sm text-gray-600">{{ __('Ingat Saya') }}</span>
                     </label>
-
-                    @if (Route::has('password.request'))
-                        <a class="text-sm text-green-600 hover:text-green-800" href="{{ route('password.request') }}">
-                            {{ __('Lupa Password?') }}
-                        </a>
-                    @endif
                 </div>
 
                 <button type="submit" 
                     class="w-full bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-colors">
                     {{ __('Login') }}
                 </button>
-
-                <p class="mt-4 text-center text-sm text-gray-600">
-                    {{ __('Belum punya akun?') }}
-                    <a href="{{ route('register') }}" 
-                        class="text-green-600 hover:text-green-800 font-medium">
-                        {{ __('Daftar') }}
-                    </a>
-                </p>
             </form>
         </div>
     </div>
