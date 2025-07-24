@@ -1,4 +1,6 @@
-<x-dashboard-layout>
+@extends('layouts.app')
+
+@section('content')
     <!-- Statistik Cards -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
@@ -175,4 +177,4 @@
         });
     </script>
     @endpush
-</x-dashboard-layout>
+@endsection
