@@ -36,56 +36,73 @@
                 </div>
 
                 <ul class="list-unstyled components">
-                    <li class="{{ request()->routeIs('dashboard') ? 'active' : '' }}">
-                        <a href="{{ route('dashboard') }}">
-                            <i class="fas fa-tachometer-alt"></i> Dashboard
-                        </a>
-                    </li>
-
-                    @if(auth()->user()->role === 'admin')
-                    <li class="{{ request()->routeIs('users.*') ? 'active' : '' }}">
-                        <a href="{{ route('users.index') }}">
-                            <i class="fas fa-users"></i> Kelola Pengguna
-                        </a>
-                    </li>
-                    @endif
-
-                    <li class="{{ request()->routeIs('barang.*') ? 'active' : '' }}">
-                        <a href="{{ route('barang.index') }}">
-                            <i class="fas fa-boxes"></i> Data Barang
-                        </a>
-                    </li>
-
-                    <li class="{{ request()->routeIs('kategori.*') ? 'active' : '' }}">
-                        <a href="{{ route('kategori.index') }}">
-                            <i class="fas fa-tags"></i> Kategori
-                        </a>
-                    </li>
-
-                    <li class="{{ request()->routeIs('barang-masuk.*') ? 'active' : '' }}">
-                        <a href="{{ route('barang-masuk.index') }}">
-                            <i class="fas fa-arrow-circle-down"></i> Barang Masuk
-                        </a>
-                    </li>
-
-                    <li class="{{ request()->routeIs('barang-keluar.*') ? 'active' : '' }}">
-                        <a href="{{ route('barang-keluar.index') }}">
-                            <i class="fas fa-arrow-circle-up"></i> Barang Keluar
-                        </a>
-                    </li>
-
-                    @if(in_array(auth()->user()->role, ['admin', 'bendahara']))
-                    <li class="{{ request()->routeIs('pengajuan.*') ? 'active' : '' }}">
-                        <a href="{{ route('pengajuan.index') }}">
-                            <i class="fas fa-file-alt"></i> Pengajuan
-                        </a>
-                    </li>
-
-                    <li class="{{ request()->routeIs('laporan.*') ? 'active' : '' }}">
-                        <a href="{{ route('laporan.index') }}">
-                            <i class="fas fa-chart-bar"></i> Laporan
-                        </a>
-                    </li>
+                    @if(auth()->user()->role === 'bendahara')
+                        <li class="{{ request()->routeIs('bendahara.dashboard') ? 'active' : '' }}">
+                            <a href="{{ route('bendahara.dashboard') }}">
+                                <i class="fas fa-tachometer-alt"></i> Dashboard
+                            </a>
+                        </li>
+                        <li class="{{ request()->routeIs('bendahara.anggaran.*') ? 'active' : '' }}">
+                            <a href="{{ route('bendahara.anggaran.index') }}">
+                                <i class="fas fa-wallet"></i> Input Anggaran
+                            </a>
+                        </li>
+                        <li class="{{ request()->routeIs('bendahara.pengajuan.*') ? 'active' : '' }}">
+                            <a href="{{ route('bendahara.pengajuan.index') }}">
+                                <i class="fas fa-file-alt"></i> Pengajuan
+                            </a>
+                        </li>
+                        <li class="{{ request()->routeIs('bendahara.topsis.*') ? 'active' : '' }}">
+                            <a href="{{ route('bendahara.topsis.index') }}">
+                                <i class="fas fa-balance-scale"></i> Analisis TOPSIS
+                            </a>
+                        </li>
+                        <li class="{{ request()->routeIs('bendahara.laporan.*') ? 'active' : '' }}">
+                            <a href="{{ route('bendahara.laporan.index') }}">
+                                <i class="fas fa-chart-bar"></i> Laporan
+                            </a>
+                        </li>
+                    @elseif(auth()->user()->role === 'admin')
+                        <li class="{{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
+                            <a href="{{ route('admin.dashboard') }}">
+                                <i class="fas fa-tachometer-alt"></i> Dashboard
+                            </a>
+                        </li>
+                        <li class="{{ request()->routeIs('users.*') ? 'active' : '' }}">
+                            <a href="{{ route('users.index') }}">
+                                <i class="fas fa-users"></i> Kelola Pengguna
+                            </a>
+                        </li>
+                        <li class="{{ request()->routeIs('barang.*') ? 'active' : '' }}">
+                            <a href="{{ route('barang.index') }}">
+                                <i class="fas fa-boxes"></i> Data Barang
+                            </a>
+                        </li>
+                        <li class="{{ request()->routeIs('kategori.*') ? 'active' : '' }}">
+                            <a href="{{ route('kategori.index') }}">
+                                <i class="fas fa-tags"></i> Kategori
+                            </a>
+                        </li>
+                        <li class="{{ request()->routeIs('barang-masuk.*') ? 'active' : '' }}">
+                            <a href="{{ route('barang-masuk.index') }}">
+                                <i class="fas fa-arrow-circle-down"></i> Barang Masuk
+                            </a>
+                        </li>
+                        <li class="{{ request()->routeIs('barang-keluar.*') ? 'active' : '' }}">
+                            <a href="{{ route('barang-keluar.index') }}">
+                                <i class="fas fa-arrow-circle-up"></i> Barang Keluar
+                            </a>
+                        </li>
+                        <li class="{{ request()->routeIs('pengajuan.*') ? 'active' : '' }}">
+                            <a href="{{ route('pengajuan.index') }}">
+                                <i class="fas fa-file-alt"></i> Pengajuan
+                            </a>
+                        </li>
+                        <li class="{{ request()->routeIs('laporan.*') ? 'active' : '' }}">
+                            <a href="{{ route('laporan.index') }}">
+                                <i class="fas fa-chart-bar"></i> Laporan
+                            </a>
+                        </li>
                     @endif
                 </ul>
             </nav>
@@ -175,7 +192,7 @@
                         </div>
                     @endisset
 
-                    {{ $slot }}
+                    @yield('content')
                 </main>
             </div>
         </div>
