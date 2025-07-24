@@ -2,8 +2,14 @@
 
 @section('content')
     <!-- Statistik Cards -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6             if (chartLabels.length === 0) {
+                ctx.canvas.style.height = '100px';
+                ctx.fillStyle = '#666';
+                ctx.font = '14px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText('Belum ada data pengeluaran', ctx.canvas.width / 2, 50);
+                return;
+            }        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Total Barang</p>
@@ -72,7 +78,11 @@
                 <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Grafik Pengeluaran</h3>
             </div>
             <div class="p-6">
-                <canvas id="expenseChart" style="height: 300px;"></canvas>
+                <canvas id="expenseChart" 
+                    data-labels='@json($chartData->pluck("bulan"))'
+                    data-values='@json($chartData->pluck("total"))'
+                    style="height: 300px;">
+                </canvas>
             </div>
         </div>
 
@@ -81,7 +91,7 @@
             <div class="p-6 border-b border-gray-200 dark:border-gray-700">
                 <div class="flex justify-between items-center">
                     <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Laporan Terbaru</h3>
-                    <a href="{{ route('laporan.index') }}" class="text-sm text-green-600 dark:text-green-400 hover:text-green-800 dark:hover:text-green-300">
+                    <a href="{{ route('bendahara.laporan.index') }}" class="text-sm text-green-600 dark:text-green-400 hover:text-green-800 dark:hover:text-green-300">
                         Lihat Semua
                     </a>
                 </div>
@@ -100,7 +110,7 @@
                         @foreach($laporanTerbaru as $laporan)
                         <tr>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                                {{ $laporan->tanggal->format('d M Y') }}
+                                {{ \Carbon\Carbon::parse($laporan->tanggal)->format('d M Y') }}
                             </td>
                             <td class="px-6 py-4 text-sm text-gray-900 dark:text-white">
                                 {{ $laporan->keterangan }}
@@ -133,47 +143,74 @@
 
     @push('scripts')
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script>
-        const ctx = document.getElementById('expenseChart').getContext('2d');
-        new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: {!! json_encode($chartData->pluck('bulan')) !!},
-                datasets: [{
-                    label: 'Pengeluaran',
-                    data: {!! json_encode($chartData->pluck('total')) !!},
-                    backgroundColor: '#10B981',
-                    borderRadius: 4
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        display: false
-                    }
+    <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', function() {
+            const canvas = document.getElementById('expenseChart');
+            const ctx = canvas.getContext('2d');
+            const chartLabels = JSON.parse(canvas.dataset.labels);
+            const chartValues = JSON.parse(canvas.dataset.values);
+
+            if (chartData.labels.length === 0) {
+                ctx.canvas.style.height = '100px';
+                ctx.fillStyle = '#666';
+                ctx.font = '14px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText('Belum ada data pengeluaran', ctx.canvas.width / 2, 50);
+                return;
+            }
+
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: chartLabels,
+                    datasets: [{
+                        label: 'Pengeluaran',
+                        data: chartValues,
+                        backgroundColor: '#10B981',
+                        borderRadius: 4
+                    }]
                 },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        ticks: {
-                            callback: function(value) {
-                                return 'Rp ' + new Intl.NumberFormat('id-ID').format(value);
-                            }
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
                         },
-                        grid: {
-                            drawBorder: false,
-                            color: theme => theme.dark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    label += 'Rp ' + new Intl.NumberFormat('id-ID').format(context.raw);
+                                    return label;
+                                }
+                            }
                         }
                     },
-                    x: {
-                        grid: {
-                            display: false
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return 'Rp ' + new Intl.NumberFormat('id-ID').format(value);
+                                }
+                            },
+                            grid: {
+                                drawBorder: false,
+                                color: theme => theme.dark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            }
                         }
                     }
                 }
-            }
+            });
         });
     </script>
     @endpush

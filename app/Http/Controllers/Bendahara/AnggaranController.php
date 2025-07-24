@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Bendahara;
 
 use App\Http\Controllers\Controller;
+use App\Models\Bendahara\Anggaran;
 use Illuminate\Http\Request;
 
 class AnggaranController extends Controller

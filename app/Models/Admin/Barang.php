@@ -5,9 +5,9 @@ namespace App\Models\Admin;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use App\Models\Kategori;
-use App\Models\BarangMasuk;
-use App\Models\BarangKeluar;
+use App\Models\Admin\Kategori;
+use App\Models\Admin\BarangMasuk;
+use App\Models\Admin\BarangKeluar;
 
 class Barang extends Model
 {

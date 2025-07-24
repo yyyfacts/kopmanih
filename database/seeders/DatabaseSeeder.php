@@ -18,7 +18,8 @@ class DatabaseSeeder extends Seeder
             'name' => 'Admin',
             'email' => 'admin@hkbp.com',
             'password' => bcrypt('admin123'),
-            'role' => 'admin'
+            'role' => 'admin',
+            'is_active' => true
         ]);
 
         // Create Bendahara User
@@ -26,7 +27,8 @@ class DatabaseSeeder extends Seeder
             'name' => 'Bendahara',
             'email' => 'bendahara@hkbp.com',
             'password' => bcrypt('bendahara123'),
-            'role' => 'bendahara'
+            'role' => 'bendahara',
+            'is_active' => true
         ]);
 
         // Create Pengurus User

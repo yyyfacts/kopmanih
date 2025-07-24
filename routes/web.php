@@ -2,7 +2,17 @@
 
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\DashboardController;
+
+// Admin Controllers
+use App\Http\Controllers\Admin\UserManagementController;
+use App\Http\Controllers\Admin\BarangController as AdminBarangController;
+use App\Http\Controllers\Admin\KategoriController as AdminKategoriController;
+use App\Http\Controllers\Admin\BarangMasukController as AdminBarangMasukController;
+use App\Http\Controllers\Admin\BarangKeluarController as AdminBarangKeluarController;
+use App\Http\Controllers\Admin\PengajuanController as AdminPengajuanController;
+use App\Http\Controllers\Admin\LaporanController as AdminLaporanController;
 
 Route::get('/', function () {
     return redirect()->route('login');
@@ -17,7 +27,15 @@ use App\Http\Controllers\Admin\UserController as AdminUserController;
 
 Route::prefix('admin')->middleware(['auth', 'role:admin'])->group(function () {
     Route::get('dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
-    Route::get('users', [AdminUserController::class, 'index'])->name('admin.users.index');
+    
+    // User Management Routes
+    Route::get('users', [UserManagementController::class, 'index'])->name('admin.users.index');
+    Route::get('users/create', [UserManagementController::class, 'create'])->name('admin.users.create');
+    Route::post('users', [UserManagementController::class, 'store'])->name('admin.users.store');
+    Route::get('users/{user}/edit', [UserManagementController::class, 'edit'])->name('admin.users.edit');
+    Route::put('users/{user}', [UserManagementController::class, 'update'])->name('admin.users.update');
+    Route::post('users/{user}/reset-password', [UserManagementController::class, 'resetPassword'])->name('admin.users.reset-password');
+    Route::post('users/{user}/toggle-status', [UserManagementController::class, 'toggleStatus'])->name('admin.users.toggle-status');
     // Tambahkan route admin lain di sini
 });
 
@@ -58,21 +76,13 @@ Route::prefix('pengurus')->middleware(['auth', 'role:pengurus'])->group(function
     // Tambahkan route pengurus lain di sini
 });
 
-Route::get('/dashboard', function () {
-    $user = auth()->user();
-    if (!$user) {
-        return redirect()->route('login');
-    }
-    switch ($user->role) {
-        case 'admin':
-            return redirect()->route('admin.dashboard');
-        case 'bendahara':
-            return redirect()->route('bendahara.dashboard');
-        case 'pengurus':
-            return redirect()->route('pengurus.dashboard');
-        default:
-            return redirect()->route('login');
-    }
+
+Route::get('/dashboard', function() {
+    $role = auth()->user()->role ?? null;
+    if ($role === 'admin') return redirect()->route('admin.dashboard');
+    if ($role === 'bendahara') return redirect()->route('bendahara.dashboard');
+    if ($role === 'pengurus') return redirect()->route('pengurus.dashboard');
+    return redirect()->route('login');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
@@ -91,10 +101,10 @@ use App\Http\Controllers\PengajuanController;
 use App\Http\Controllers\TopsisController;
 use App\Http\Controllers\LaporanController;
 Route::middleware(['auth'])->group(function () {
-    Route::resource('barang', BarangController::class);
-    Route::resource('kategori', KategoriController::class);
-    Route::resource('barang-masuk', BarangMasukController::class);
-    Route::resource('barang-keluar', BarangKeluarController::class);
-    Route::resource('pengajuan', PengajuanController::class);
-    Route::resource('laporan', LaporanController::class);
+    Route::resource('barang', AdminBarangController::class);
+    Route::resource('kategori', AdminKategoriController::class);
+    Route::resource('barang-masuk', AdminBarangMasukController::class);
+    Route::resource('barang-keluar', AdminBarangKeluarController::class);
+    Route::resource('pengajuan', AdminPengajuanController::class);
+    Route::resource('laporan', AdminLaporanController::class);
 });
