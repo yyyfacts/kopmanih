@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class BarangKeluar extends Model
@@ -13,7 +14,7 @@ class BarangKeluar extends Model
         'barang_id',
         'jumlah',
         'tanggal_keluar',
-        'keterangan',
+        'keterangan', 
         'peminjam',
         'user_id',
         'status',
@@ -40,3 +41,4 @@ class BarangKeluar extends Model
     {
         return $this->belongsTo(User::class, 'approved_by');
     }
+}

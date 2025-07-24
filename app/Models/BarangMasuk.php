@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class BarangMasuk extends Model
@@ -31,3 +32,4 @@ class BarangMasuk extends Model
     {
         return $this->belongsTo(User::class);
     }
+}

@@ -13,7 +13,29 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        // Create Admin User
+        \App\Models\User::create([
+            'name' => 'Admin',
+            'email' => 'admin@hkbp.com',
+            'password' => bcrypt('admin123'),
+            'role' => 'admin'
+        ]);
+
+        // Create Bendahara User
+        \App\Models\User::create([
+            'name' => 'Bendahara',
+            'email' => 'bendahara@hkbp.com',
+            'password' => bcrypt('bendahara123'),
+            'role' => 'bendahara'
+        ]);
+
+        // Create Pengurus User
+        \App\Models\User::create([
+            'name' => 'Pengurus',
+            'email' => 'pengurus@hkbp.com',
+            'password' => bcrypt('pengurus123'),
+            'role' => 'pengurus'
+        ]);
 
         User::factory()->create([
             'name' => 'Test User',

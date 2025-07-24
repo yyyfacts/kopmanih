@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Pengajuan extends Model
@@ -21,6 +22,8 @@ class Pengajuan extends Model
     ];
 
     protected $casts = [
+        'urgensi' => 'integer',
+        'stok' => 'integer',
         'anggaran' => 'decimal:2',
         'skor_topsis' => 'decimal:4'
     ];
@@ -29,3 +32,4 @@ class Pengajuan extends Model
     {
         return $this->belongsTo(User::class);
     }
+}
