@@ -1,10 +1,26 @@
-<x-dashboard-layout>
+@extends('layouts.app')
+
+@section('content')
     <!-- Statistik Cards -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
         <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Pengajuan Dibuat</p>
+                    <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Total Barang</p>
+                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white">{{ $totalBarang }}</h3>
+                </div>
+                <div class="p-3 rounded-full bg-green-100 dark:bg-green-900">
+                    <i class="fas fa-boxes text-green-600 dark:text-green-400"></i>
+                </div>
+            </div>
+            <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
+                Total barang inventaris
+            </p>
+        </div>
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-medium text-gray-600 dark:text-gray-400"></p>Pengajuan Dibuat</p>
                     <h3 class="text-2xl font-bold text-gray-900 dark:text-white">{{ $totalPengajuan }}</h3>
                 </div>
                 <div class="p-3 rounded-full bg-blue-100 dark:bg-blue-900">
@@ -113,43 +129,52 @@
     </div>
 
     @push('scripts')
+    <script type="text/javascript" nonce="{{ csrf_token() }}">
+        var pengajuanData = {
+            pending: parseInt("{{ $pengajuanPending }}"),
+            disetujui: parseInt("{{ $pengajuanDisetujui }}"),
+            ditolak: parseInt("{{ $pengajuanDitolak }}")
+        };
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
-        const ctx = document.getElementById('statusChart').getContext('2d');
-        new Chart(ctx, {
-            type: 'doughnut',
-            data: {
-                labels: ['Pending', 'Disetujui', 'Ditolak'],
-                datasets: [{
-                    data: [
-                        {{ $pengajuanPending }},
-                        {{ $pengajuanDisetujui }},
-                        {{ $pengajuanDitolak }}
-                    ],
-                    backgroundColor: [
-                        '#FBBF24',
-                        '#10B981',
-                        '#EF4444'
-                    ]
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        position: 'bottom',
-                        labels: {
-                            usePointStyle: true,
-                            padding: 20,
-                            font: {
-                                size: 12
+        document.addEventListener('DOMContentLoaded', function() {
+            const ctx = document.getElementById('statusChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Pending', 'Disetujui', 'Ditolak'],
+                    datasets: [{
+                        data: [
+                            pengajuanData.pending,
+                            pengajuanData.disetujui,
+                            pengajuanData.ditolak
+                        ],
+                        backgroundColor: [
+                            '#FBBF24',
+                            '#10B981',
+                            '#EF4444'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                usePointStyle: true,
+                                padding: 20,
+                                font: {
+                                    size: 12
+                                }
                             }
                         }
                     }
                 }
-            }
+            });
         });
     </script>
     @endpush
-</x-dashboard-layout>
+@endsection

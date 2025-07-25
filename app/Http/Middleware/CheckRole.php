@@ -19,18 +19,33 @@ class CheckRole
     public function handle(Request $request, Closure $next, string $role)
     {
         if (!Auth::check()) {
-            return redirect()->route('login');
+            return redirect()->route('login')
+                ->with('error', 'Silakan login terlebih dahulu.');
         }
 
-        if (!Auth::user()->is_active) {
+        $user = Auth::user();
+        
+        if (!$user->is_active) {
             Auth::logout();
             return redirect()->route('login')
                 ->with('error', 'Akun Anda tidak aktif.');
         }
 
-        if (Auth::user()->role !== $role) {
+        if ($user->role !== $role) {
+            // Redirect ke dashboard sesuai role user
+            $roleRoutes = [
+                'admin' => 'admin.dashboard',
+                'bendahara' => 'bendahara.dashboard',
+                'pengurus' => 'pengurus.dashboard'
+            ];
+
+            if (isset($roleRoutes[$user->role])) {
+                return redirect()->route($roleRoutes[$user->role])
+                    ->with('error', 'Anda tidak memiliki akses ke halaman tersebut. Dialihkan ke halaman dashboard Anda.');
+            }
+
             return redirect()->route('login')
-                ->with('error', 'Anda tidak memiliki akses ke halaman tersebut.');
+                ->with('error', 'Role tidak valid.');
         }
 
         return $next($request);

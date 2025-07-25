@@ -3,16 +3,29 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
-use App\Http\Controllers\DashboardController;
 
 // Admin Controllers
-use App\Http\Controllers\Admin\UserManagementController;
-use App\Http\Controllers\Admin\BarangController as AdminBarangController;
-use App\Http\Controllers\Admin\KategoriController as AdminKategoriController;
-use App\Http\Controllers\Admin\BarangMasukController as AdminBarangMasukController;
-use App\Http\Controllers\Admin\BarangKeluarController as AdminBarangKeluarController;
-use App\Http\Controllers\Admin\PengajuanController as AdminPengajuanController;
-use App\Http\Controllers\Admin\LaporanController as AdminLaporanController;
+use App\Http\Controllers\Admin\AdminDashboardController;
+use App\Http\Controllers\Admin\AdminUserController;
+use App\Http\Controllers\Admin\AdminBarangController;
+use App\Http\Controllers\Admin\AdminKategoriController;
+use App\Http\Controllers\Admin\AdminBarangMasukController;
+use App\Http\Controllers\Admin\AdminBarangKeluarController;
+use App\Http\Controllers\Admin\AdminPengajuanController;
+use App\Http\Controllers\Admin\AdminLaporanController;
+
+// Bendahara Controllers
+use App\Http\Controllers\Bendahara\BendaharaDashboardController;
+use App\Http\Controllers\Bendahara\BendaharaAnggaranController;
+use App\Http\Controllers\Bendahara\BendaharaPengajuanController;
+use App\Http\Controllers\Bendahara\BendaharaTopsisController;
+use App\Http\Controllers\Bendahara\BendaharaLaporanController;
+use App\Http\Controllers\Bendahara\BendaharaValidasiController;
+
+// Pengurus Controllers
+use App\Http\Controllers\Pengurus\PengurusDashboardController;
+use App\Http\Controllers\Pengurus\PengurusPengajuanController;
+use App\Http\Controllers\Pengurus\PengurusBarangController;
 
 Route::get('/', function () {
     return redirect()->route('login');
@@ -21,70 +34,105 @@ Route::get('/', function () {
 // =====================
 // ROUTE MENU ADMIN
 // =====================
-use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
-use App\Http\Controllers\Admin\UserController as AdminUserController;
-// Tambahkan controller admin lain jika ada
-
 Route::prefix('admin')->middleware(['auth', 'role:admin'])->group(function () {
-    Route::get('dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
+    // Dashboard
+    Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
     
     // User Management Routes
-    Route::get('users', [UserManagementController::class, 'index'])->name('admin.users.index');
-    Route::get('users/create', [UserManagementController::class, 'create'])->name('admin.users.create');
-    Route::post('users', [UserManagementController::class, 'store'])->name('admin.users.store');
-    Route::get('users/{user}/edit', [UserManagementController::class, 'edit'])->name('admin.users.edit');
-    Route::put('users/{user}', [UserManagementController::class, 'update'])->name('admin.users.update');
-    Route::post('users/{user}/reset-password', [UserManagementController::class, 'resetPassword'])->name('admin.users.reset-password');
-    Route::post('users/{user}/toggle-status', [UserManagementController::class, 'toggleStatus'])->name('admin.users.toggle-status');
-    // Tambahkan route admin lain di sini
+    Route::resource('users', AdminUserController::class, ['as' => 'admin']);
+    Route::post('users/{user}/reset-password', [AdminUserController::class, 'resetPassword'])->name('admin.users.reset-password');
+    Route::post('users/{user}/toggle-status', [AdminUserController::class, 'toggleStatus'])->name('admin.users.toggle-status');
+    
+    // Master Data Routes
+    Route::resource('kategori', AdminKategoriController::class, ['as' => 'admin']);
+    Route::resource('barang', AdminBarangController::class, ['as' => 'admin']);
+    
+    // Transaction Routes
+    Route::resource('barang-masuk', AdminBarangMasukController::class, ['as' => 'admin']);
+    Route::resource('barang-keluar', AdminBarangKeluarController::class, ['as' => 'admin']);
+    Route::resource('pengajuan', AdminPengajuanController::class, ['as' => 'admin']);
+    
+    // Report Routes
+    Route::prefix('laporan')->name('admin.laporan.')->group(function () {
+        Route::get('/', [AdminLaporanController::class, 'index'])->name('index');
+        Route::get('/barang', [AdminLaporanController::class, 'barang'])->name('barang');
+        Route::get('/transaksi', [AdminLaporanController::class, 'transaksi'])->name('transaksi');
+        Route::get('/pengajuan', [AdminLaporanController::class, 'pengajuan'])->name('pengajuan');
+        Route::get('/export/pdf', [AdminLaporanController::class, 'exportPdf'])->name('export.pdf');
+        Route::get('/export/excel', [AdminLaporanController::class, 'exportExcel'])->name('export.excel');
+    });
 });
+
+use App\Http\Controllers\Bendahara\DashboardController as BendaharaDashboardController;
+use App\Http\Controllers\Bendahara\KasMasukController as BendaharaKasMasukController;
+use App\Http\Controllers\Bendahara\PengajuanController as BendaharaPengajuanController;
+use App\Http\Controllers\Bendahara\TopsisController as BendaharaTopsisController;
+use App\Http\Controllers\Bendahara\LaporanController as BendaharaLaporanController;
 
 // =====================
 // ROUTE MENU BENDAHARA
 // =====================
-use App\Http\Controllers\Bendahara\DashboardController as BendaharaDashboardController;
-use App\Http\Controllers\Bendahara\AnggaranController as BendaharaAnggaranController;
-use App\Http\Controllers\Bendahara\PengajuanController as BendaharaPengajuanController;
-use App\Http\Controllers\Bendahara\TopsisController as BendaharaTopsisController;
-use App\Http\Controllers\Bendahara\LaporanController as BendaharaLaporanController;
-use App\Http\Controllers\Bendahara\ValidasiController as BendaharaValidasiController;
-
 Route::prefix('bendahara')->middleware(['auth', 'role:bendahara'])->group(function () {
-    Route::get('dashboard', [BendaharaDashboardController::class, 'index'])->name('bendahara.dashboard');
-    Route::get('anggaran', [BendaharaAnggaranController::class, 'index'])->name('bendahara.anggaran.index');
-    Route::post('anggaran', [BendaharaAnggaranController::class, 'store'])->name('bendahara.anggaran.store');
-    Route::get('anggaran/riwayat', [BendaharaAnggaranController::class, 'riwayat'])->name('bendahara.anggaran.riwayat');
-    Route::get('pengajuan', [BendaharaPengajuanController::class, 'index'])->name('bendahara.pengajuan.index');
-    Route::get('pengajuan/{id}', [BendaharaPengajuanController::class, 'show'])->name('bendahara.pengajuan.show');
-    Route::post('pengajuan/{id}/verifikasi', [BendaharaPengajuanController::class, 'verifikasi'])->name('bendahara.pengajuan.verifikasi');
-    Route::get('topsis', [BendaharaTopsisController::class, 'index'])->name('bendahara.topsis.index');
-    Route::post('topsis/hitung', [BendaharaTopsisController::class, 'hitung'])->name('bendahara.topsis.hitung');
-    Route::get('topsis/ekspor', [BendaharaTopsisController::class, 'eksporPdf'])->name('bendahara.topsis.ekspor');
-    Route::get('laporan', [BendaharaLaporanController::class, 'index'])->name('bendahara.laporan.index');
-    Route::get('laporan/ekspor', [BendaharaLaporanController::class, 'eksporPdf'])->name('bendahara.laporan.ekspor');
-    Route::get('validasi', [BendaharaValidasiController::class, 'index'])->name('bendahara.validasi.index');
+    // Dashboard & Overview
+    Route::get('/dashboard', [BendaharaDashboardController::class, 'index'])->name('bendahara.dashboard');
+    
+    // Kas Management
+    Route::prefix('kas-masuk')->name('bendahara.kas-masuk.')->group(function () {
+        Route::get('/', [BendaharaKasMasukController::class, 'index'])->name('index');
+        Route::get('/create', [BendaharaKasMasukController::class, 'create'])->name('create');
+        Route::post('/', [BendaharaKasMasukController::class, 'store'])->name('store');
+        Route::get('/{kasMasuk}', [BendaharaKasMasukController::class, 'show'])->name('show');
+        Route::delete('/{kasMasuk}', [BendaharaKasMasukController::class, 'destroy'])->name('destroy');
+    });
+    
+    // Verifikasi Pengajuan
+    Route::prefix('verifikasi-pengajuan')->name('bendahara.verifikasi-pengajuan.')->group(function () {
+        Route::get('/', [BendaharaPengajuanController::class, 'index'])->name('index');
+        Route::get('/{pengajuan}', [BendaharaPengajuanController::class, 'show'])->name('show');
+        Route::post('/{pengajuan}/verifikasi', [BendaharaPengajuanController::class, 'verifikasi'])->name('verifikasi');
+        Route::post('/{pengajuan}/tolak', [BendaharaPengajuanController::class, 'tolak'])->name('tolak');
+    });
+    
+    // TOPSIS Analysis
+    Route::prefix('analisis-topsis')->name('bendahara.analisis-topsis.')->group(function () {
+        Route::get('/', [BendaharaTopsisController::class, 'index'])->name('index');
+        Route::get('/kriteria', [BendaharaTopsisController::class, 'kriteria'])->name('kriteria');
+        Route::post('/hitung', [BendaharaTopsisController::class, 'hitung'])->name('hitung');
+        Route::get('/hasil', [BendaharaTopsisController::class, 'hasil'])->name('hasil');
+        Route::get('/export-pdf', [BendaharaTopsisController::class, 'exportPdf'])->name('export.pdf');
+    });
+    
+    // Reports
+    Route::prefix('laporan')->name('bendahara.laporan.')->group(function () {
+        Route::get('/', [BendaharaLaporanController::class, 'index'])->name('index');
+        Route::get('/kas', [BendaharaLaporanController::class, 'kas'])->name('kas');
+        Route::get('/pengajuan', [BendaharaLaporanController::class, 'pengajuan'])->name('pengajuan');
+        Route::get('/topsis', [BendaharaLaporanController::class, 'topsis'])->name('topsis');
+        Route::get('/export-pdf/{type}', [BendaharaLaporanController::class, 'exportPdf'])->name('export.pdf');
+        Route::get('/export-excel/{type}', [BendaharaLaporanController::class, 'exportExcel'])->name('export.excel');
+    });
 });
 
 // =====================
 // ROUTE MENU PENGURUS
 // =====================
-use App\Http\Controllers\Pengurus\DashboardController as PengurusDashboardController;
-// Tambahkan controller pengurus lain jika ada
-
 Route::prefix('pengurus')->middleware(['auth', 'role:pengurus'])->group(function () {
-    Route::get('dashboard', [PengurusDashboardController::class, 'index'])->name('pengurus.dashboard');
-    // Tambahkan route pengurus lain di sini
+    // Dashboard
+    Route::get('/dashboard', [PengurusDashboardController::class, 'index'])->name('pengurus.dashboard');
+    
+    // Inventory Management
+    Route::resource('barang-masuk', PengurusBarangMasukController::class, ['as' => 'pengurus']);
+    Route::resource('barang-keluar', PengurusBarangKeluarController::class, ['as' => 'pengurus']);
+    
+    // Pengajuan Management
+    Route::resource('pengajuan', PengurusPengajuanController::class, ['as' => 'pengurus']);
+    Route::get('riwayat-pengajuan', [PengurusPengajuanController::class, 'riwayat'])->name('pengurus.riwayat-pengajuan');
+    
+    // Inventory Check
+    Route::get('stok-barang', [PengurusBarangController::class, 'index'])->name('pengurus.stok.index');
 });
 
-
-Route::get('/dashboard', function() {
-    $role = auth()->user()->role ?? null;
-    if ($role === 'admin') return redirect()->route('admin.dashboard');
-    if ($role === 'bendahara') return redirect()->route('bendahara.dashboard');
-    if ($role === 'pengurus') return redirect()->route('pengurus.dashboard');
-    return redirect()->route('login');
-})->middleware(['auth', 'verified'])->name('dashboard');
-
+// Profile Routes
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -93,18 +141,7 @@ Route::middleware('auth')->group(function () {
 
 require __DIR__.'/auth.php';
 
-use App\Http\Controllers\BarangController;
-use App\Http\Controllers\KategoriController;
-use App\Http\Controllers\BarangMasukController;
-use App\Http\Controllers\BarangKeluarController;
-use App\Http\Controllers\PengajuanController;
-use App\Http\Controllers\TopsisController;
-use App\Http\Controllers\LaporanController;
-Route::middleware(['auth'])->group(function () {
-    Route::resource('barang', AdminBarangController::class);
-    Route::resource('kategori', AdminKategoriController::class);
-    Route::resource('barang-masuk', AdminBarangMasukController::class);
-    Route::resource('barang-keluar', AdminBarangKeluarController::class);
-    Route::resource('pengajuan', AdminPengajuanController::class);
-    Route::resource('laporan', AdminLaporanController::class);
+// Fallback route untuk menangani sesi yang expired
+Route::fallback(function () {
+    return redirect()->route('login');
 });

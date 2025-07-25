@@ -4,4 +4,4 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 
-class BarangMasukController extends Controller {}
+class AdminKategoriController extends Controller {}

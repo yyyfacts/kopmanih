@@ -2,14 +2,8 @@
 
 @section('content')
     <!-- Statistik Cards -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6             if (chartLabels.length === 0) {
-                ctx.canvas.style.height = '100px';
-                ctx.fillStyle = '#666';
-                ctx.font = '14px Arial';
-                ctx.textAlign = 'center';
-                ctx.fillText('Belum ada data pengeluaran', ctx.canvas.width / 2, 50);
-                return;
-            }        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Total Barang</p>
@@ -150,7 +144,7 @@
             const chartLabels = JSON.parse(canvas.dataset.labels);
             const chartValues = JSON.parse(canvas.dataset.values);
 
-            if (chartData.labels.length === 0) {
+            if (chartLabels.length === 0) {
                 ctx.canvas.style.height = '100px';
                 ctx.fillStyle = '#666';
                 ctx.font = '14px Arial';
