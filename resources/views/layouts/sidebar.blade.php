@@ -2,10 +2,12 @@
     <div class="p-6 font-bold text-xl">HKBP Inventory</div>
     <nav class="flex-1">
         <ul class="space-y-2">
-            @if(auth()->check())
-                <li><a href="{{ route('dashboard') }}" class="block py-2 px-4 hover:bg-[#00B2FF] rounded">Dashboard</a></li>
-            @endif
-            {{-- Tambahkan menu lain sesuai role lain jika diperlukan --}}
+            <li><a href="/dashboard" class="block py-2 px-4 hover:bg-[#00B2FF] rounded">Dashboard</a></li>
+            <li><a href="/barang" class="block py-2 px-4 hover:bg-[#00B2FF] rounded">Data Barang</a></li>
+            <li><a href="/barang-masuk" class="block py-2 px-4 hover:bg-[#00B2FF] rounded">Barang Masuk</a></li>
+            <li><a href="/barang-keluar" class="block py-2 px-4 hover:bg-[#00B2FF] rounded">Barang Keluar</a></li>
+            <li><a href="/pengajuan" class="block py-2 px-4 hover:bg-[#00B2FF] rounded">Pengajuan</a></li>
+            <li><a href="/laporan" class="block py-2 px-4 hover:bg-[#00B2FF] rounded">Laporan</a></li>
         </ul>
     </nav>
 </aside>

@@ -4,15 +4,28 @@
             <!-- Logo HKBP -->
             <div class="text-center mb-6">
                 <img src="{{ asset('images/logo-hkbp.png') }}" alt="HKBP Logo" class="mx-auto h-20">
-                <h2 class="text-2xl font-semibold text-green-600 mt-4">Login E-Inventory</h2>
+                <h2 class="text-2xl font-semibold text-green-600 mt-4">Daftar E-Inventory</h2>
                 <p class="text-sm text-gray-600">HKBP Setia Mekar</p>
             </div>
 
-            <!-- Session Status -->
-            <x-auth-session-status class="mb-4" :status="session('status')" />
-
-            <form method="POST" action="{{ route('login') }}">
+            <form method="POST" action="{{ route('register') }}">
                 @csrf
+
+                <!-- Name -->
+                <div class="mb-4">
+                    <x-input-label for="name" :value="__('Nama')" class="text-sm font-medium text-gray-700" />
+                    <div class="mt-1">
+                        <x-text-input id="name" 
+                            class="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500" 
+                            type="text" 
+                            name="name" 
+                            :value="old('name')" 
+                            required 
+                            autofocus 
+                            autocomplete="name" />
+                        <x-input-error :messages="$errors->get('name')" class="mt-1 text-sm text-red-600" />
+                    </div>
+                </div>
 
                 <!-- Email Address -->
                 <div class="mb-4">
@@ -24,7 +37,6 @@
                             name="email" 
                             :value="old('email')" 
                             required 
-                            autofocus 
                             autocomplete="username" />
                         <x-input-error :messages="$errors->get('email')" class="mt-1 text-sm text-red-600" />
                     </div>
@@ -39,7 +51,7 @@
                             type="password"
                             name="password"
                             required 
-                            autocomplete="current-password" />
+                            autocomplete="new-password" />
                         <button type="button" 
                             onclick="togglePassword('password', 'toggleIcon')"
                             class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500">
@@ -49,21 +61,37 @@
                     </div>
                 </div>
 
-                <!-- Remember Me -->
-                <div class="flex items-center mb-6">
-                    <label for="remember_me" class="inline-flex items-center">
-                        <input id="remember_me" 
-                            type="checkbox" 
-                            class="rounded border-gray-300 text-green-600 focus:ring-green-500" 
-                            name="remember">
-                        <span class="ms-2 text-sm text-gray-600">{{ __('Ingat Saya') }}</span>
-                    </label>
+                <!-- Confirm Password -->
+                <div class="mb-6">
+                    <x-input-label for="password_confirmation" :value="__('Konfirmasi Password')" class="text-sm font-medium text-gray-700" />
+                    <div class="mt-1 relative">
+                        <x-text-input id="password_confirmation" 
+                            class="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500" 
+                            type="password"
+                            name="password_confirmation" 
+                            required 
+                            autocomplete="new-password" />
+                        <button type="button" 
+                            onclick="togglePassword('password_confirmation', 'toggleIconConfirm')"
+                            class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500">
+                            <i class="fas fa-eye" id="toggleIconConfirm"></i>
+                        </button>
+                        <x-input-error :messages="$errors->get('password_confirmation')" class="mt-1 text-sm text-red-600" />
+                    </div>
                 </div>
 
                 <button type="submit" 
                     class="w-full bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-colors">
-                    {{ __('Login') }}
+                    {{ __('Daftar') }}
                 </button>
+
+                <p class="mt-4 text-center text-sm text-gray-600">
+                    {{ __('Sudah punya akun?') }}
+                    <a href="{{ route('login') }}" 
+                        class="text-green-600 hover:text-green-800 font-medium">
+                        {{ __('Login') }}
+                    </a>
+                </p>
             </form>
         </div>
     </div>

@@ -28,25 +28,7 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        $user = Auth::user();
-        
-        if (!$user || !$user->is_active) {
-            Auth::logout();
-            return redirect()->route('login')->with('error', 'Akun tidak aktif');
-        }
-
-        // Redirect based on role
-        switch ($user->role) {
-            case 'admin':
-                return redirect()->route('admin.dashboard')->with('success', 'Selamat datang, Admin!');
-            case 'bendahara':
-                return redirect()->route('bendahara.dashboard')->with('success', 'Selamat datang, Bendahara!');
-            case 'pengurus':
-                return redirect()->route('pengurus.dashboard')->with('success', 'Selamat datang, Pengurus!');
-            default:
-                Auth::logout();
-                return redirect()->route('login')->with('error', 'Role tidak valid');
-        }
+        return redirect()->intended(route('dashboard', absolute: false));
     }
 
     /**

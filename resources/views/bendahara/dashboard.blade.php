@@ -1,8 +1,6 @@
-@extends('layouts.app')
-
-@section('content')
+<x-dashboard-layout>
     <!-- Statistik Cards -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
             <div class="flex items-center justify-between">
                 <div>
@@ -72,11 +70,7 @@
                 <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Grafik Pengeluaran</h3>
             </div>
             <div class="p-6">
-                <canvas id="expenseChart" 
-                    data-labels='@json($chartData->pluck("bulan"))'
-                    data-values='@json($chartData->pluck("total"))'
-                    style="height: 300px;">
-                </canvas>
+                <canvas id="expenseChart" style="height: 300px;"></canvas>
             </div>
         </div>
 
@@ -85,7 +79,7 @@
             <div class="p-6 border-b border-gray-200 dark:border-gray-700">
                 <div class="flex justify-between items-center">
                     <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Laporan Terbaru</h3>
-                    <a href="{{ route('bendahara.laporan.index') }}" class="text-sm text-green-600 dark:text-green-400 hover:text-green-800 dark:hover:text-green-300">
+                    <a href="{{ route('laporan.index') }}" class="text-sm text-green-600 dark:text-green-400 hover:text-green-800 dark:hover:text-green-300">
                         Lihat Semua
                     </a>
                 </div>
@@ -104,7 +98,7 @@
                         @foreach($laporanTerbaru as $laporan)
                         <tr>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                                {{ \Carbon\Carbon::parse($laporan->tanggal)->format('d M Y') }}
+                                {{ $laporan->tanggal->format('d M Y') }}
                             </td>
                             <td class="px-6 py-4 text-sm text-gray-900 dark:text-white">
                                 {{ $laporan->keterangan }}
@@ -137,75 +131,48 @@
 
     @push('scripts')
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script type="text/javascript">
-        document.addEventListener('DOMContentLoaded', function() {
-            const canvas = document.getElementById('expenseChart');
-            const ctx = canvas.getContext('2d');
-            const chartLabels = JSON.parse(canvas.dataset.labels);
-            const chartValues = JSON.parse(canvas.dataset.values);
-
-            if (chartLabels.length === 0) {
-                ctx.canvas.style.height = '100px';
-                ctx.fillStyle = '#666';
-                ctx.font = '14px Arial';
-                ctx.textAlign = 'center';
-                ctx.fillText('Belum ada data pengeluaran', ctx.canvas.width / 2, 50);
-                return;
-            }
-
-            new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: chartLabels,
-                    datasets: [{
-                        label: 'Pengeluaran',
-                        data: chartValues,
-                        backgroundColor: '#10B981',
-                        borderRadius: 4
-                    }]
+    <script>
+        const ctx = document.getElementById('expenseChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: {!! json_encode($chartData->pluck('bulan')) !!},
+                datasets: [{
+                    label: 'Pengeluaran',
+                    data: {!! json_encode($chartData->pluck('total')) !!},
+                    backgroundColor: '#10B981',
+                    borderRadius: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
                 },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            display: false
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    let label = context.dataset.label || '';
-                                    if (label) {
-                                        label += ': ';
-                                    }
-                                    label += 'Rp ' + new Intl.NumberFormat('id-ID').format(context.raw);
-                                    return label;
-                                }
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return 'Rp ' + new Intl.NumberFormat('id-ID').format(value);
                             }
+                        },
+                        grid: {
+                            drawBorder: false,
+                            color: theme => theme.dark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'
                         }
                     },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            ticks: {
-                                callback: function(value) {
-                                    return 'Rp ' + new Intl.NumberFormat('id-ID').format(value);
-                                }
-                            },
-                            grid: {
-                                drawBorder: false,
-                                color: theme => theme.dark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'
-                            }
-                        },
-                        x: {
-                            grid: {
-                                display: false
-                            }
+                    x: {
+                        grid: {
+                            display: false
                         }
                     }
                 }
-            });
+            }
         });
     </script>
     @endpush
-@endsection
+</x-dashboard-layout>

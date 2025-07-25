@@ -85,15 +85,15 @@
                                 <div class="relative flex space-x-3">
                                     <div>
                                         <span class="h-8 w-8 rounded-full bg-green-100 dark:bg-green-900 flex items-center justify-center">
-                                            <i class="fas {{ $activity['icon'] }} text-green-600 dark:text-green-400"></i>
+                                            <i class="fas {{ $activity->icon }} text-green-600 dark:text-green-400"></i>
                                         </span>
                                     </div>
                                     <div class="min-w-0 flex-1 pt-1.5 flex justify-between space-x-4">
                                         <div>
-                                            <p class="text-sm text-gray-700 dark:text-gray-300">{{ $activity['description'] }}</p>
+                                            <p class="text-sm text-gray-700 dark:text-gray-300">{{ $activity->description }}</p>
                                         </div>
                                         <div class="text-right text-sm whitespace-nowrap text-gray-500 dark:text-gray-400">
-                                            {{ \Carbon\Carbon::parse($activity['created_at'])->diffForHumans() }}
+                                            {{ $activity->created_at->diffForHumans() }}
                                         </div>
                                     </div>
                                 </div>
@@ -118,35 +118,27 @@
 
     @push('scripts')
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script type="text/javascript" nonce="{{ csrf_token() }}">
-        var chartConfig = {
-            labels: JSON.parse('{!! $chartData->pluck("bulan") !!}'),
-            masuk: JSON.parse('{!! $chartData->pluck("masuk") !!}'),
-            keluar: JSON.parse('{!! $chartData->pluck("keluar") !!}')
-        };
+    <script>
         const ctx = document.getElementById('inventoryChart').getContext('2d');
         new Chart(ctx, {
             type: 'line',
             data: {
-                labels: chartConfig.labels,
-                datasets: [
-                    {
-                        label: 'Barang Masuk',
-                        data: chartConfig.masuk,
-                        borderColor: '#10B981',
-                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
-                        tension: 0.4,
-                        fill: true
-                    },
-                    {
-                        label: 'Barang Keluar',
-                        data: chartConfig.keluar,
-                        borderColor: '#EF4444',
-                        backgroundColor: 'rgba(239, 68, 68, 0.1)',
-                        tension: 0.4,
-                        fill: true
-                    }
-                ]
+                labels: {!! json_encode($chartData->pluck('bulan')) !!},
+                datasets: [{
+                    label: 'Barang Masuk',
+                    data: {!! json_encode($chartData->pluck('masuk')) !!},
+                    borderColor: '#10B981',
+                    backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                    tension: 0.4,
+                    fill: true
+                }, {
+                    label: 'Barang Keluar',
+                    data: {!! json_encode($chartData->pluck('keluar')) !!},
+                    borderColor: '#EF4444',
+                    backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                    tension: 0.4,
+                    fill: true
+                }]
             },
             options: {
                 responsive: true,
